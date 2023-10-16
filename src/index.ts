@@ -4,6 +4,9 @@ import serviceRoutes from './routes/services';
 import packageRoutes from './routes/packages';
 import hotelRoutes from './routes/hotels';
 import companiesRoutes from './routes/companies';
+import bookingsRoutes from './routes/bookings';
+import attachmentsRoutes from './routes/attachments';
+
 
 
 
@@ -16,6 +19,9 @@ app.use('/services', serviceRoutes);
 app.use('/packages', packageRoutes);
 app.use('/hotels', hotelRoutes);
 app.use('/companies', companiesRoutes);
+app.use('/bookings', bookingsRoutes);
+app.use('/attachments', attachmentsRoutes);
+
 
 
 // app.get('/', (req: Request, res: Response) => {
