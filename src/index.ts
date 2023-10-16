@@ -7,9 +7,6 @@ import companiesRoutes from './routes/companies';
 import bookingsRoutes from './routes/bookings';
 import attachmentsRoutes from './routes/attachments';
 
-
-
-
 const app = express();
 const port = process.env.PORT || 3000;
 

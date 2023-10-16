@@ -37,7 +37,7 @@ export const createUser = (req: Request, res: Response) => {
   };
 
   users.push(newUser);
-  res.status(201).json({ message: 'User created successfully', user: newUser });
+  res.status(201).json({ message: 'User Signup successfully', user: newUser });
 };
 
 export const getAllUsers = (req: Request, res: Response) => {
