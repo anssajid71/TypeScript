@@ -1,0 +1,26 @@
+{
+  "development": {
+    "host": "localhost",
+    "user":"manssajid",
+    "password" :"password",
+    "port":"5432",
+    "dialect": "postgres",
+    "database": "typescript_db"
+  },
+  "test": {
+    "host": "localhost",
+    "user":"manssajid",
+    "password" :"password",
+    "port":"5432",
+    "dialect": "postgres",
+    "database": "typescript_db"
+    },
+    "production": {
+      "host": "localhost",
+      "user":"manssajid",
+      "password" :"password",
+      "port":"5432",
+      "dialect": "postgres",
+      "database": "typescript_db"
+    }
+}
