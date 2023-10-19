@@ -1,6 +1,5 @@
 import Booking  from '../models/booking';
 
-// Function to create a new booking
 const createBooking = async (bookingData: any) => {
   try {
     const newBooking = await Booking.create(bookingData);
@@ -27,7 +26,6 @@ const updateBooking = async (bookingId: number, bookingData: any) => {
   }
 };
 
-// Function to get all bookings
 const getAllBookings = async () => {
   try {
     const bookings = await Booking.findAll();
@@ -37,7 +35,6 @@ const getAllBookings = async () => {
   }
 };
 
-// Function to get a booking by ID
 const getBookingById = async (bookingId: number) => {
   try {
     const booking = await Booking.findByPk(bookingId);

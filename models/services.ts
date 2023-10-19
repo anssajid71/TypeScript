@@ -2,24 +2,22 @@
 import { Model, DataTypes, Association, Sequelize } from 'sequelize';
 
 interface ServicesModelAttributes {
-  id: number; // Add the 'id' attribute
+  id: number; 
   package_id: number;
   service_name: string;
 }
 
 interface ServicesModelCreationAttributes extends ServicesModelAttributes {
-  // Add any optional attributes here
 }
 
 class Services extends Model<ServicesModelAttributes, ServicesModelCreationAttributes> {
   static initialize(sequelize: Sequelize) {
     throw new Error('Method not implemented.');
   }
-  public id!: number; // Define the 'id' attribute
+  public id!: number; 
   public package_id!: number;
   public service_name!: string;
 
-  // Define class-level associations
   public static associate(models: any): void {
     Services.hasMany(models.Packages, {
       foreignKey: 'package_id',
@@ -38,7 +36,7 @@ export function initServicesModel(sequelize: Sequelize): void {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-      }, // Define the 'id' attribute in the init function
+      },
       package_id: DataTypes.INTEGER,
       service_name: DataTypes.STRING,
     },

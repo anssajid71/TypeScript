@@ -15,6 +15,7 @@ export function authenticateToken(req: { headers: { [x: string]: any }; user: an
 
   if (token == null) {
     return res.sendStatus(401);
+    
   }
 
   jwt.verify(token, JWT_SECRET, (err: any, user: any) => {

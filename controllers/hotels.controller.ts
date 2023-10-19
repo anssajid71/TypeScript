@@ -13,7 +13,7 @@ interface HostelData {
 }
 
 let hostels: HostelData[] = [];
-let nextHostelId = 1; // Initialize a variable to assign unique IDs
+let nextHostelId = 1;
 
 export const createHostel = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -24,7 +24,7 @@ export const createHostel = async (req: Request, res: Response) => {
 
   try {
     const newHostel: HostelData = {
-      id: nextHostelId++, // Assign a unique ID
+      id: nextHostelId++,
       hotel_name: req.body.hotel_name,
       location: req.body.location,
       images: req.body.images || null,

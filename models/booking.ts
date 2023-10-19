@@ -1,8 +1,7 @@
-// models/Booking.ts
 import { Model, DataTypes, Association, Sequelize } from 'sequelize';
 
 interface BookingModelAttributes {
-  id: number; // Add the id field
+  id: number; 
   user_id: number;
   package_id: number;
   date: Date;
@@ -17,14 +16,13 @@ interface BookingModelAttributes {
 }
 
 interface BookingModelCreationAttributes extends BookingModelAttributes {
-  // Add any optional attributes here
 }
 
 class Booking extends Model<BookingModelAttributes, BookingModelCreationAttributes> {
   static initialize(sequelize: Sequelize) {
     throw new Error('Method not implemented.');
   }
-  public id!: number; // Declare id field
+  public id!: number; 
   public user_id!: number;
   public package_id!: number;
   public date!: Date;
@@ -37,7 +35,6 @@ class Booking extends Model<BookingModelAttributes, BookingModelCreationAttribut
   public payment_status!: 'pending' | 'completed' | 'failed';
   public payment_date!: string;
 
-  // Define class-level associations
   public static associate(models: any): void {
     Booking.belongsTo(models.User, {
       foreignKey: 'user_id',

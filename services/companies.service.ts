@@ -1,6 +1,5 @@
 import Companies  from '../models/companies';
 
-// Function to create a new company
 const createCompany = async (companyData: any) => {
   try {
     const newCompany = await Companies.create(companyData);
@@ -9,8 +8,6 @@ const createCompany = async (companyData: any) => {
     throw error;
   }
 };
-
-// Function to update a company by ID
 const updateCompany = async (companyId: number, companyData: any) => {
   try {
     const updatedCompany = await Companies.update(companyData, {
@@ -28,7 +25,6 @@ const updateCompany = async (companyId: number, companyData: any) => {
   }
 };
 
-// Function to get all companies
 const getAllCompanies = async () => {
   try {
     const companies = await Companies.findAll();
@@ -38,7 +34,6 @@ const getAllCompanies = async () => {
   }
 };
 
-// Function to get a company by ID
 const getCompanyById = async (companyId: number) => {
   try {
     const company = await Companies.findByPk(companyId);
@@ -51,7 +46,6 @@ const getCompanyById = async (companyId: number) => {
   }
 };
 
-// Function to delete a company by ID
 const deleteCompany = async (companyId: number) => {
   try {
     const rowsDeleted = await Companies.destroy({

@@ -10,18 +10,16 @@ interface AttachmentsModelAttributes {
 }
 
 interface AttachmentsModelCreationAttributes extends AttachmentsModelAttributes {
-  // Add any optional attributes here
 }
 
 class Attachments extends Model<AttachmentsModelAttributes, AttachmentsModelCreationAttributes> {
-  public id!: number; // Define id as a number
+  public id!: number; 
   public attachment_id!: number;
   public attachment_type!: string;
   public attachment_url!: string;
   public created_at!: string;
   public updated_at!: string;
 
-  // Define class-level associations
   public static associate(models: any): void {
     Attachments.hasMany(models.Hotels, {
       foreignKey: 'attachment_id',

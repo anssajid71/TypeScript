@@ -20,7 +20,7 @@ export const createAttachment = (req: Request, res: Response) => {
     attachment_url: req.body.attachment_url,
     created_at: new Date(),
     updated_at: new Date(),
-  };
+  }; 
 
   attachments.push(newAttachment);
   const expiresIn = '1m';

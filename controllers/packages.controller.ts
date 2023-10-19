@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import Packages  from '../models/packages'; // Import your Sequelize model
+import Packages  from '../models/packages';
 import { generateToken } from '../config/generatetoken';
 
 interface PackageData {
@@ -18,7 +18,7 @@ interface PackageData {
 }
 
 let packages: PackageData[] = [];
-let nextPackageId = 1; // Initialize a variable to assign unique IDs
+let nextPackageId = 1;
 
 export const createPackage = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -29,7 +29,7 @@ export const createPackage = async (req: Request, res: Response) => {
 
   try {
     const newPackage: PackageData = {
-      id: nextPackageId++, // Assign a unique ID
+      id: nextPackageId++,
       name: req.body.name,
       email: req.body.email,
       price: req.body.price,

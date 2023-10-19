@@ -1,6 +1,5 @@
 import User  from '../models/user';
 import bcrypt from 'bcrypt';
-// import { generateToken } from '../config/generatetoken';
 
 const createUser = async (userData: any) => {
   try {

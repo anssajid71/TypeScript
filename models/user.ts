@@ -1,7 +1,7 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface UserModelAttributes {
-  id: number; // Add the 'id' attribute
+  id: number; 
   name: string;
   email: string;
   phone_number: string | null;
@@ -13,7 +13,7 @@ interface UserModelCreationAttributes extends UserModelAttributes {
 }
 
 class User extends Model<UserModelAttributes, UserModelCreationAttributes> {
-  public id!: number; // Define the 'id' attribute
+  public id!: number; 
   public name!: string;
   public email!: string;
   public phone_number!: string | null;
@@ -52,7 +52,7 @@ export function initUserModel(sequelize: Sequelize): void {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-      }, // Define the 'id' attribute in the init function
+      }, 
       name: {
         type: DataTypes.STRING,
         allowNull: false,

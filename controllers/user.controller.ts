@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { generateToken, authenticateToken } from '../config/generatetoken'; // Import your JWT functions
+import { generateToken, authenticateToken } from '../config/generatetoken';
 
 interface UserData {
   id: number;

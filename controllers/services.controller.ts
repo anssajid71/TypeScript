@@ -12,7 +12,6 @@ interface ServiceData {
 let services: ServiceData[] = [];
 let nextServiceId = 1;
 
-// ...
 export const createService = async (req: Request, res: Response) => {
   const errors = validationResult(req);
 

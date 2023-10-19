@@ -2,7 +2,7 @@
 import { Model, DataTypes, Association, Sequelize } from 'sequelize';
 
 interface PackagesModelAttributes {
-  id: number; // Add the 'id' attribute
+  id: number;
   name: string;
   email: string;
   price: number | null;
@@ -18,14 +18,13 @@ interface PackagesModelAttributes {
 }
 
 interface PackagesModelCreationAttributes extends PackagesModelAttributes {
-  // Add any optional attributes here
 }
 
 class Packages extends Model<PackagesModelAttributes, PackagesModelCreationAttributes> {
   static initialize(sequelize: Sequelize) {
     throw new Error('Method not implemented.');
   }
-  public id!: number; // Define the 'id' attribute
+  public id!: number;
   public name!: string;
   public email!: string;
   public price!: number | null;
@@ -39,7 +38,6 @@ class Packages extends Model<PackagesModelAttributes, PackagesModelCreationAttri
   public created_at!: string | null;
   public updated_at!: string | null;
 
-  // Define class-level associations
   public static associate(models: any): void {
     Packages.belongsTo(models.Hotels, {
       foreignKey: 'id',
@@ -68,7 +66,7 @@ export function initPackagesModel(sequelize: Sequelize): void {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-      }, // Define the 'id' attribute in the init function
+      }, 
       name: DataTypes.STRING,
       email: {
         type: DataTypes.STRING,

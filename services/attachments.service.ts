@@ -1,6 +1,5 @@
 import Attachments  from '../models/attachments';
 
-// Function to create a new attachment
 const createAttachment = async (attachmentData: any) => {
   try {
     const newAttachment = await Attachments.create(attachmentData);
@@ -10,7 +9,6 @@ const createAttachment = async (attachmentData: any) => {
   }
 };
 
-// Function to update an attachment by ID
 const updateAttachment = async (attachmentId: number, attachmentData: any) => {
   try {
     const updatedAttachment = await Attachments.findByPk(attachmentId);
@@ -21,7 +19,6 @@ const updateAttachment = async (attachmentId: number, attachmentData: any) => {
   }
 };
 
-// Function to get all attachments
 const getAllAttachments = async () => {
   try {
     const attachments = await Attachments.findAll();
@@ -31,7 +28,6 @@ const getAllAttachments = async () => {
   }
 };
 
-// Function to get an attachment by ID
 const getAttachmentById = async (attachmentId: number) => {
   try {
     const attachment = await Attachments.findByPk(attachmentId);

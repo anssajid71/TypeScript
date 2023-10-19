@@ -1,8 +1,7 @@
-// models/Companies.ts
 import { Model, DataTypes, Association, Sequelize } from 'sequelize';
 
 interface CompaniesModelAttributes {
-  id: number; // Add the id field
+  id: number; 
   user_id: number;
   name: string;
   logo: string | null;
@@ -11,18 +10,16 @@ interface CompaniesModelAttributes {
 }
 
 interface CompaniesModelCreationAttributes extends CompaniesModelAttributes {
-  // Add any optional attributes here
 }
 
 class Companies extends Model<CompaniesModelAttributes, CompaniesModelCreationAttributes> {
-  public id!: number; // Declare id field
+  public id!: number; 
   public user_id!: number;
   public name!: string;
   public logo!: string | null;
   public phone_number!: string | null;
   public payment_status!: string | null;
 
-  // Define class-level associations
   public static associate(models: any): void {
     Companies.belongsTo(models.User, {
       foreignKey: 'user_id',

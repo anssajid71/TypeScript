@@ -2,7 +2,7 @@
 import { Model, DataTypes, Association, Sequelize } from 'sequelize';
 
 interface HotelsModelAttributes {
-  id: number; // Add the id field
+  id: number;
   hotel_name: string;
   location: string;
   images: string | null;
@@ -11,21 +11,19 @@ interface HotelsModelAttributes {
 }
 
 interface HotelsModelCreationAttributes extends HotelsModelAttributes {
-  // Add any optional attributes here
 }
 
 class Hotels extends Model<HotelsModelAttributes, HotelsModelCreationAttributes> {
   static initialize(sequelize: Sequelize) {
     throw new Error('Method not implemented.');
   }
-  public id!: number; // Define id field
+  public id!: number; 
   public hotel_name!: string;
   public location!: string;
   public images!: string | null;
   public description!: string | null;
   public price!: number | null;
 
-  // Define class-level associations
   public static associate(models: any): void {
     Hotels.hasMany(models.Packages, {
       foreignKey: 'id',
@@ -42,7 +40,7 @@ export function initHotelsModel(sequelize: Sequelize): void {
   Hotels.init(
     {
       id: {
-        type: DataTypes.INTEGER, // Add id field
+        type: DataTypes.INTEGER, 
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
