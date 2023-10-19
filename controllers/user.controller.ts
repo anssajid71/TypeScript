@@ -42,21 +42,31 @@ export const createUser = (req: Request, res: Response) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
+  const { name, email, password, role } = req.body;
+
+  const existingUser = users.find((user) => user.email === email);
+
+  if (existingUser) {
+    return res.status(400).json({ error: 'Email already registered' });
+  }
+
   const newUser: UserData = {
     id: users.length + 1,
-    name: req.body.name,
-    email: req.body.email,
+    name,
+    email,
     phone_number: req.body.phone_number,
-    password: req.body.password,
-    role: req.body.role,
+    password,
+    role,
   };
 
   users.push(newUser);
 
-const expiresIn = '1m';
-const token = generateToken({ data: { user: 'example' }, expiresIn });
+  const expiresIn = '1m';
+  const token = generateToken({ data: { user: 'example' }, expiresIn });
+
   res.status(201).json({ message: 'User Signup successfully', user: newUser, token });
 };
+
 
 export const getAllUsers = (req: Request, res: Response) => {
   res.json({ message: 'All users retrieved successfully', users });
