@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { generateToken } from '../config/generatetoken';
 
 interface Attachment {
   id: number;
@@ -22,7 +23,9 @@ export const createAttachment = (req: Request, res: Response) => {
   };
 
   attachments.push(newAttachment);
-  res.status(201).json({ message: 'Attachment created successfully', attachment: newAttachment });
+  const expiresIn = '1m';
+const token = generateToken({ data: { user: 'example' }, expiresIn });
+  res.status(201).json({ message: 'Attachment created successfully', attachment: newAttachment, token });
 };
 
 export const getAllAttachments = (req: Request, res: Response) => {
@@ -34,7 +37,7 @@ export const getAttachmentById = (req: Request, res: Response) => {
   const attachment = attachments.find((a) => a.id === attachmentId);
 
   if (attachment) {
-    res.json({ message: 'Attachment retrieved successfully', attachment });
+    res.json({ message: 'Attachment retrieved successfully', attachment});
   } else {
     res.status(404).json({ error: 'Attachment not found' });
   }

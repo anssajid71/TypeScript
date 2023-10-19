@@ -1,36 +1,27 @@
 import jwt from 'jsonwebtoken';
-import { jwtSecret, jwtExpiration } from './env';
+import dotenv from 'dotenv';
 
-console.log('JWT Secret:', jwtSecret);
-console.log('JWT Expiration:', jwtExpiration);
+dotenv.config();
 
+const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret_key';
 
-// Define the payload type for the JWT
-interface TokenPayload {
-  id: number;
-  email: string;
+export function generateToken({ data, expiresIn }: { data: object; expiresIn: string; }): string {
+  return jwt.sign(data, JWT_SECRET, { expiresIn });
 }
 
-function generateToken(user: TokenPayload): string {
-  const payload: TokenPayload = {
-    id: 123, // Change this according to your requirements
-    email: user.email,
-  };
+export function authenticateToken(req: { headers: { [x: string]: any }; user: any }, res: { sendStatus: (arg0: number) => void }, next: () => void) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-  const options: jwt.SignOptions = {
-    expiresIn: '1m',
-  };
-
-  return jwt.sign(payload, jwtSecret, options);
-}
-
-function verifyToken(token: string): TokenPayload | null {
-  try {
-    const decoded = jwt.verify(token, jwtSecret) as TokenPayload;
-    return decoded;
-  } catch (error) {
-    return null;
+  if (token == null) {
+    return res.sendStatus(401);
   }
-}
 
-export { generateToken, verifyToken };
+  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    req.user = user;
+    next();
+  });
+}

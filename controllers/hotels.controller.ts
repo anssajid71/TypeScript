@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import Hotels from '../models/hotels';
+import { generateToken } from '../config/generatetoken';
 
 interface HostelData {
   id: number;
@@ -32,8 +33,9 @@ export const createHostel = async (req: Request, res: Response) => {
     };
 
     hostels.push(newHostel);
-
-    res.status(201).json({ message: 'Hostel created successfully', hostel: newHostel });
+    const expiresIn = '1m';
+    const token = generateToken({ data: { user: 'example' }, expiresIn });
+    res.status(201).json({ message: 'Hostel created successfully', hostel: newHostel, token });
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while creating the hostel' });
   }

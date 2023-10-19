@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import { generateToken } from '../config/generatetoken';
 
 interface BookingData {
   id: number;
@@ -41,7 +42,9 @@ export const createBooking = (req: Request, res: Response) => {
   };
 
   bookings.push(newBooking);
-  res.status(201).json({ message: 'Booking created successfully', booking: newBooking });
+  const expiresIn = '1m';
+const token = generateToken({ data: { user: 'example' }, expiresIn });
+  res.status(201).json({ message: 'Booking created successfully', booking: newBooking, token });
 };
 
 export const getAllBookings = (req: Request, res: Response) => {

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Companies from '../models/companies';
 import { validationResult } from 'express-validator';
+import { generateToken } from '../config/generatetoken';
 
 interface CompanyData {
   id: number;
@@ -27,8 +28,9 @@ export const createCompany = async (req: Request, res: Response) => {
       phone_number: req.body.phone_number || null,
       payment_status: req.body.payment_status || null,
     };
-
-    res.status(201).json({ message: 'Company created successfully', company: newCompany });
+    const expiresIn = '1m';
+    const token = generateToken({ data: { user: 'example' }, expiresIn });
+    res.status(201).json({ message: 'Company created successfully', company: newCompany, token });
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while creating the company' });
   }

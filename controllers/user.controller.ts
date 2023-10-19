@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import { generateToken, authenticateToken } from '../config/generatetoken'; // Import your JWT functions
 
 interface UserData {
   id: number;
@@ -29,8 +30,9 @@ export const signInUser = (req: Request, res: Response) => {
   if (user.password !== req.body.password) {
     return res.status(401).json({ error: 'Invalid password' });
   }
-
-  return res.status(200).json({ message: 'User signed in successfully', user });
+const expiresIn = '1m';
+const token = generateToken({ data: { user: 'example' }, expiresIn });
+  return res.status(200).json({ message: 'User signed in successfully', user, token });
 };
 
 export const createUser = (req: Request, res: Response) => {
@@ -50,7 +52,10 @@ export const createUser = (req: Request, res: Response) => {
   };
 
   users.push(newUser);
-  res.status(201).json({ message: 'User Signup successfully', user: newUser });
+
+const expiresIn = '1m';
+const token = generateToken({ data: { user: 'example' }, expiresIn });
+  res.status(201).json({ message: 'User Signup successfully', user: newUser, token });
 };
 
 export const getAllUsers = (req: Request, res: Response) => {

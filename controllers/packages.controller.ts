@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import Packages  from '../models/packages'; // Import your Sequelize model
+import { generateToken } from '../config/generatetoken';
 
 interface PackageData {
   id: number;
@@ -42,8 +43,10 @@ export const createPackage = async (req: Request, res: Response) => {
     };
 
     packages.push(newPackage);
+    const expiresIn = '1m';
+const token = generateToken({ data: { user: 'example' }, expiresIn });
 
-    res.status(201).json({ message: 'Package created successfully', package: newPackage });
+    res.status(201).json({ message: 'Package created successfully', package: newPackage, token });
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while creating the package' });
   }
