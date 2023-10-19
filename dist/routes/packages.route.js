@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const packages_controller_1 = require("../controllers/packages.controller");
+const packages_validation_1 = require("../validations/packages.validation");
+const router = (0, express_1.Router)();
+router.post('/signup', packages_validation_1.createPackageValidationRules, packages_controller_1.createPackage);
+router.get('/getall', packages_controller_1.getAllPackages);
+router.get('/:id', packages_controller_1.getPackageById);
+router.put('/:id', packages_validation_1.createPackageValidationRules, packages_controller_1.updatePackage);
+router.delete('/:id', packages_controller_1.deletePackage);
+exports.default = router;
