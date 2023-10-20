@@ -75,7 +75,12 @@
               "$ref": "#/definitions/ErrorResponse"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
       }
     },
     "/user/{id}": {
@@ -199,71 +204,7 @@
     }
   },
   
-  "/services/signup": {
-    "post": {
-      "tags": ["Services"],
-      "summary": "Create a new service",
-      "description": "Creates a new service.",
-      "parameters": [
-        {
-          "name": "Service",
-          "in": "body",
-          "required": true,
-          "schema": {
-            "$ref": "#/definitions/Services"
-          }
-        }
-      ],
-      "responses": {
-        "201": {
-          "description": "Service created successfully.",
-          "schema": {
-            "$ref": "#/definitions/Services"
-          }
-        },
-        "400": {
-          "description": "Bad request. Validation error.",
-          "schema": {
-            "$ref": "#/definitions/ErrorResponse"
-          }
-        },
-        "500": {
-          "description": "Internal server error.",
-          "schema": {
-            "$ref": "#/definitions/ErrorResponse"
-          }
-        }
-      }
-    },
-  "/services/getall": {
-    "get": {
-      "tags": ["Services"],
-      "summary": "Get all services",
-      "description": "Retrieves a list of all services.",
-      "responses": {
-        "200": {
-          "description": "List of services retrieved successfully.",
-          "schema": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/Services"
-            }
-          }
-        },
-        "400": {
-          "description": "Bad request. Validation error.",
-          "schema": {
-            "$ref": "#/definitions/ErrorResponse"
-          }
-        },
-        "500": {
-          "description": "Internal server error.",
-          "schema": {
-            "$ref": "#/definitions/ErrorResponse"
-          }
-        }
-      }
-    },
+  
   
   "definitions": {
     "ID": {
@@ -469,5 +410,12 @@
   },
   "responses": {},
   "parameters": {},
-  "securityDefinitions": {}
-  }}}
+"securityDefinitions": {
+  "apiKey": {
+    "type": "apiKey",
+    "name": "Authorization",
+    "in": "header",
+    "description": "API Key Authentication"
+  }
+}
+  }
