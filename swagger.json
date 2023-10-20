@@ -5,9 +5,23 @@
     "description": "API documentation for Travel Agent Application"
   },
   "swagger": "2.0",
+  "tags": [
+    {
+      "name": "User",
+      "description": "User related operations"
+    },
+    {
+      "name": "Services",
+      "description": "Services related operations"
+    }
+  ],
+  
+  "schemes": ["http"],
   "paths": {
-    "/users": {
+    "/user":
+     {
       "get": {
+        "tags": ["User"],
         "summary": "Get a list of users",
         "description": "Returns a list of users.",
         "responses": {
@@ -29,6 +43,7 @@
         }
       },
       "post": {
+        "tags": ["User"],
         "summary": "Create a new user",
         "description": "Creates a new user.",
         "parameters": [
@@ -63,8 +78,9 @@
         }
       }
     },
-    "/users/{id}": {
+    "/user/{id}": {
       "get": {
+        "tags": ["User"],
         "summary": "Get a user by ID",
         "description": "Returns a user by ID.",
         "parameters": [
@@ -92,6 +108,7 @@
         }
       },
       "put": {
+        "tags": ["User"],
         "summary": "Update a user by ID",
         "description": "Updates a user by ID.",
         "parameters": [
@@ -127,6 +144,7 @@
         }
       },
       "delete": {
+        "tags": ["User"],
         "summary": "Delete a user by ID",
         "description": "Deletes a user by ID.",
         "parameters": [
@@ -151,8 +169,9 @@
         }
       }
     },
-    "/users/signin": {
+    "/user/signin": {
       "post": {
+        "tags": ["User"],
         "summary": "Sign in a user",
         "description": "Signs in a user.",
         "parameters": [
@@ -179,9 +198,78 @@
       }
     }
   },
- 
-
+  
+  "/services/signup": {
+    "post": {
+      "tags": ["Services"],
+      "summary": "Create a new service",
+      "description": "Creates a new service.",
+      "parameters": [
+        {
+          "name": "Service",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Services"
+          }
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Service created successfully.",
+          "schema": {
+            "$ref": "#/definitions/Services"
+          }
+        },
+        "400": {
+          "description": "Bad request. Validation error.",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        }
+      }
+    },
+  "/services/getall": {
+    "get": {
+      "tags": ["Services"],
+      "summary": "Get all services",
+      "description": "Retrieves a list of all services.",
+      "responses": {
+        "200": {
+          "description": "List of services retrieved successfully.",
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Services"
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request. Validation error.",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/ErrorResponse"
+          }
+        }
+      }
+    },
+  
   "definitions": {
+    "ID": {
+      "type": "integer",
+      "format": "int64"
+    },
     "User": {
       "properties": {
         "id": {
@@ -217,52 +305,50 @@
         }
       }
     },
-  
-  "Packages": { 
-  "properties": {
-    "id": {
-      "type": "integer"
+    "Packages": {
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "start_date": {
+          "type": "string"
+        },
+        "end_date": {
+          "type": "string"
+        },
+        "total_days": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string"
+        },
+        "images": {
+          "type": "string"
+        },
+        "available_seats": {
+          "type": "integer"
+        },
+        "location": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
     },
-    "name": {
-      "type": "string"
-    },
-    "email": {
-      "type": "string"
-    },
-    "price": {
-      "type": "number"
-    },
-    "start_date": {
-      "type": "string" 
-    },
-    "end_date": {
-      "type": "string"
-    },
-    "total_days": {
-      "type": "integer"
-    },
-    "type": {
-      "type": "string"
-    },
-    "images": {
-      "type": "string"
-    },
-    "available_seats": {
-      "type": "integer"
-    },
-    "location": {
-      "type": "string"
-    },
-    "created_at": {
-      "type": "string" 
-    },
-    "updated_at": {
-      "type": "string" 
-    }
-  }
-},
-
-"Hotels": {
+    "Hotels": {
       "properties": {
         "id": {
           "type": "integer"
@@ -284,31 +370,29 @@
         }
       }
     },
-
-    "Companies": { 
-    "properties": {
-      "id": {
-        "type": "integer"
-      },
-      "user_id": {
-        "type": "integer"
-      },
-      "name": {
-        "type": "string"
-      },
-      "logo": {
-        "type": "string"
-      },
-      "phone_number": {
-        "type": "string"
-      },
-      "payment_status": {
-        "type": "string"
+    "Companies": {
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "user_id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        },
+        "payment_status": {
+          "type": "string"
+        }
       }
-    }
-  },
-
-  "Booking": {
+    },
+    "Booking": {
       "properties": {
         "id": {
           "type": "integer"
@@ -320,11 +404,11 @@
           "type": "integer"
         },
         "date": {
-          "type": "string", 
-          "format": "date-time" 
+          "type": "string",
+          "format": "date-time"
         },
         "type": {
-          "type": "string", 
+          "type": "string",
           "enum": ["flight", "hotel", "car_rental"]
         },
         "total_number_of_persons": {
@@ -337,15 +421,15 @@
           "type": "number"
         },
         "status": {
-          "type": "string", 
-          "enum": ["pending", "confirmed", "canceled"] 
+          "type": "string",
+          "enum": ["pending", "confirmed", "canceled"]
         },
         "payment_method": {
           "type": "string"
         },
         "payment_status": {
-          "type": "string", 
-          "enum": ["pending", "completed", "failed"] 
+          "type": "string",
+          "enum": ["pending", "completed", "failed"]
         },
         "payment_date": {
           "type": "string"
@@ -353,27 +437,27 @@
       }
     },
     "Attachments": {
-    "properties": {
-      "id": {
-        "type": "integer"
-      },
-      "attachment_id": {
-        "type": "integer"
-      },
-      "attachment_type": {
-        "type": "string"
-      },
-      "attachment_url": {
-        "type": "string"
-      },
-      "created_at": {
-        "type": "string"
-      },
-      "updated_at": {
-        "type": "string"
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "attachment_id": {
+          "type": "integer"
+        },
+        "attachment_type": {
+          "type": "string"
+        },
+        "attachment_url": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
       }
-    }
-  },
+    },
     "ErrorResponse": {
       "properties": {
         "error": {
@@ -385,6 +469,5 @@
   },
   "responses": {},
   "parameters": {},
-  "securityDefinitions": {},
-  "tags": []
-}
+  "securityDefinitions": {}
+  }}}
