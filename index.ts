@@ -7,6 +7,8 @@ import hotelRoutes from './routes/hotels.route';
 import companiesRoutes from './routes/companies.route';
 import bookingsRoutes from './routes/bookings.route';
 import attachmentsRoutes from './routes/attachments.route';
+import swaggerRoutes from './routes/swagger';
+
 import fs from 'fs';
 
 import swaggerJSDoc from 'swagger-jsdoc';
@@ -37,6 +39,8 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use('/user', userRoutes);
+app.use('/api-docs', swaggerRoutes);
+
 app.use('/services', serviceRoutes);
 app.use('/packages', packageRoutes);
 app.use('/hotels', hotelRoutes);

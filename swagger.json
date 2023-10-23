@@ -4,48 +4,23 @@
     "version": "1.0.0",
     "description": "API documentation for Travel Agent Application"
   },
-  "swagger": "2.0",
-  "tags": [
-    {
-      "name": "User",
-      "description": "User related operations"
-    },
-    {
-      "name": "Services",
-      "description": "Services related operations"
+  "basePath": "/user",
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization"
     }
-  ],
-  
-  "schemes": ["http"],
+  },
+  "swagger": "2.0",
   "paths": {
-    "/user":
-     {
-      "get": {
-        "tags": ["User"],
-        "summary": "Get a list of users",
-        "description": "Returns a list of users.",
-        "responses": {
-          "200": {
-            "description": "A list of users.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      },
+    "/user/signin": {
       "post": {
-        "tags": ["User"],
-        "summary": "Create a new user",
-        "description": "Creates a new user.",
+        "tags": [
+          "User"
+        ],
+        "summary": "Sign in a user",
+        "description": "Signs in a user.",
         "parameters": [
           {
             "name": "User",
@@ -57,35 +32,53 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "User created successfully.",
+          "200": {
+            "description": "User signed in successfully.",
             "schema": {
               "$ref": "#/definitions/User"
             }
           },
-          "400": {
-            "description": "Bad request. Validation error.",
+          "401": {
+            "description": "Invalid Email address or password."
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/users/getall": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get a list of users",
+        "description": "Returns a list of users.",
+        "responses": {
+          "200": {
+            "description": "A list of users.",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
             }
           }
         },
         "security": [
           {
-            "apiKey": []
+            "JWT": []
           }
         ]
       }
     },
     "/user/{id}": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "summary": "Get a user by ID",
         "description": "Returns a user by ID.",
         "parameters": [
@@ -99,7 +92,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A user object.",
+            "description": "User found successfully.",
             "schema": {
               "$ref": "#/definitions/User"
             }
@@ -110,10 +103,17 @@
               "$ref": "#/definitions/ErrorResponse"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       },
       "put": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "summary": "Update a user by ID",
         "description": "Updates a user by ID.",
         "parameters": [
@@ -146,10 +146,17 @@
               "$ref": "#/definitions/ErrorResponse"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       },
       "delete": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "summary": "Delete a user by ID",
         "description": "Deletes a user by ID.",
         "parameters": [
@@ -162,8 +169,16 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "User deleted successfully."
+          "200": {
+            "description": "User deleted successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "404": {
             "description": "User not found.",
@@ -171,14 +186,21 @@
               "$ref": "#/definitions/ErrorResponse"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
-    "/user/signin": {
+    "/user/signup": {
       "post": {
-        "tags": ["User"],
-        "summary": "Sign in a user",
-        "description": "Signs in a user.",
+        "tags": [
+          "User"
+        ],
+        "summary": "Create a new user",
+        "description": "Creates a new user.",
         "parameters": [
           {
             "name": "User",
@@ -190,28 +212,30 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "User signed in successfully.",
+          "201": {
+            "description": "User created successfully.",
             "schema": {
               "$ref": "#/definitions/User"
             }
           },
-          "401": {
-            "description": "Invalid Email address."
+          "400": {
+            "description": "Bad request. Validation error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     }
   },
-  
-  
-  
   "definitions": {
-    "ID": {
-      "type": "integer",
-      "format": "int64"
-    },
     "User": {
+      "type": "object",
       "properties": {
         "id": {
           "type": "integer"
@@ -233,189 +257,16 @@
         }
       }
     },
-    "Services": {
-      "properties": {
-        "id": {
-          "type": "integer"
-        },
-        "package_id": {
-          "type": "integer"
-        },
-        "service_name": {
-          "type": "string"
-        }
-      }
-    },
-    "Packages": {
-      "properties": {
-        "id": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "price": {
-          "type": "number"
-        },
-        "start_date": {
-          "type": "string"
-        },
-        "end_date": {
-          "type": "string"
-        },
-        "total_days": {
-          "type": "integer"
-        },
-        "type": {
-          "type": "string"
-        },
-        "images": {
-          "type": "string"
-        },
-        "available_seats": {
-          "type": "integer"
-        },
-        "location": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
-    "Hotels": {
-      "properties": {
-        "id": {
-          "type": "integer"
-        },
-        "hotel_name": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "images": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "price": {
-          "type": "number"
-        }
-      }
-    },
-    "Companies": {
-      "properties": {
-        "id": {
-          "type": "integer"
-        },
-        "user_id": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "logo": {
-          "type": "string"
-        },
-        "phone_number": {
-          "type": "string"
-        },
-        "payment_status": {
-          "type": "string"
-        }
-      }
-    },
-    "Booking": {
-      "properties": {
-        "id": {
-          "type": "integer"
-        },
-        "user_id": {
-          "type": "integer"
-        },
-        "package_id": {
-          "type": "integer"
-        },
-        "date": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "type": {
-          "type": "string",
-          "enum": ["flight", "hotel", "car_rental"]
-        },
-        "total_number_of_persons": {
-          "type": "integer"
-        },
-        "pickup_location": {
-          "type": "string"
-        },
-        "total_cost": {
-          "type": "number"
-        },
-        "status": {
-          "type": "string",
-          "enum": ["pending", "confirmed", "canceled"]
-        },
-        "payment_method": {
-          "type": "string"
-        },
-        "payment_status": {
-          "type": "string",
-          "enum": ["pending", "completed", "failed"]
-        },
-        "payment_date": {
-          "type": "string"
-        }
-      }
-    },
-    "Attachments": {
-      "properties": {
-        "id": {
-          "type": "integer"
-        },
-        "attachment_id": {
-          "type": "integer"
-        },
-        "attachment_type": {
-          "type": "string"
-        },
-        "attachment_url": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
     "ErrorResponse": {
+      "type": "object",
       "properties": {
         "error": {
           "type": "string"
         }
-      },
-      "required": ["error"]
+      }
     }
   },
   "responses": {},
   "parameters": {},
-"securityDefinitions": {
-  "apiKey": {
-    "type": "apiKey",
-    "name": "Authorization",
-    "in": "header",
-    "description": "API Key Authentication"
-  }
+  "tags": []
 }
-  }
