@@ -44,7 +44,7 @@ const router = Router();
 
 /**
  * @swagger
- * /user/signin:
+ * /signin:
  *   post:
  *     tags:
  *       - User
@@ -66,7 +66,7 @@ const router = Router();
  *     security:
  *       - JWT: []
  */
-router.post('/user/signin', (req: Request, res: Response) => {
+router.post('/signin', (req: Request, res: Response) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -92,7 +92,7 @@ router.post('/user/signin', (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /users/getall:
+ * /getall:
  *   get:
  *     tags:
  *       - User
@@ -108,13 +108,13 @@ router.post('/user/signin', (req: Request, res: Response) => {
  *     security:
  *       - JWT: []
  */
-router.get('/users/getall', (req: Request, res: Response) => {
+router.get('/getall', (req: Request, res: Response) => {
   return res.status(200).json(users);
 });
 
 /**
  * @swagger
- * /user/{id}:
+ * /{id}:
  *   get:
  *     tags:
  *       - User
@@ -138,7 +138,7 @@ router.get('/users/getall', (req: Request, res: Response) => {
  *     security:
  *       - JWT: []
  */
-router.get('/user/:id', (req: Request, res: Response) => {
+router.get('/:id', (req: Request, res: Response) => {
   const userId = parseInt(req.params.id, 10);
   const user = users.find((u) => u.id === userId);
 
@@ -151,7 +151,7 @@ router.get('/user/:id', (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /user/{id}:
+ * /{id}:
  *   put:
  *     tags:
  *       - User
@@ -180,7 +180,7 @@ router.get('/user/:id', (req: Request, res: Response) => {
  *     security:
  *       - JWT: []
  */
-router.put('/user/:id', (req: Request, res: Response) => {
+router.put('/:id', (req: Request, res: Response) => {
   const userId = parseInt(req.params.id, 10);
   const user = users.find((u) => u.id === userId);
 
@@ -195,7 +195,7 @@ router.put('/user/:id', (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /user/{id}:
+ * /{id}:
  *   delete:
  *     tags:
  *       - User
@@ -222,7 +222,7 @@ router.put('/user/:id', (req: Request, res: Response) => {
  *     security:
  *       - JWT: []
  */
-router.delete('/user/:id', (req: Request, res: Response) => {
+router.delete('/:id', (req: Request, res: Response) => {
     const userId = parseInt(req.params.id, 10);
     const index = users.findIndex((u) => u.id === userId);
   
@@ -236,7 +236,7 @@ router.delete('/user/:id', (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /user/signup:
+ * /signup:
  *   post:
  *     tags:
  *       - User
@@ -260,15 +260,22 @@ router.delete('/user/:id', (req: Request, res: Response) => {
  *     security:
  *       - JWT: []
  */
-router.post('/user/signup', (req: Request, res: Response) => {
-  const newUser = req.body as UserData;
-  newUser.id = users.length + 1;
-  users.push(newUser);
-
-  const expiresIn = '1m';
-  const token = generateToken({ data: { user: newUser.id }, expiresIn });
-
-  return res.status(201).json({ message: 'User created successfully', user: newUser, token });
-});
+router.post('/signup', (req: Request, res: Response) => {
+    const newUser = req.body as UserData;
+    const existingUser = users.find((u) => u.email === newUser.email);
+  
+    if (existingUser) {
+      return res.status(409).json({ error: 'Email is already in use' });
+    }
+  
+    newUser.id = users.length + 1;
+    users.push(newUser);
+  
+    const expiresIn = '1m';
+    const token = generateToken({ data: { user: newUser.id }, expiresIn });
+  
+    return res.status(201).json({ message: 'User created successfully', user: newUser, token });
+  });
+  
 
 export default router;

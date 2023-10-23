@@ -1,7 +1,6 @@
 import { config } from 'dotenv';
 
-config(); // Load environment variables from the .env file
-
+config();
 export const jwtSecret: string | undefined = process.env.REACT_APP_JWT_SECRET;
 export const jwtExpiration: string | undefined = process.env.JWT_EXPIRATION;
 

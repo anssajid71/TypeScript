@@ -27,7 +27,7 @@ const router = Router();
 
 /**
  * @swagger
- * /services/signup:
+ * /signup:
  *   post:
  *     tags:
  *       - Service
@@ -47,11 +47,11 @@ const router = Router();
  *     security:
  *       - JWT: []
  */
-router.post('/services/signup', serviceValidationRules, createService);
+router.post('/signup', serviceValidationRules, createService);
 
 /**
  * @swagger
- * /services/getall:
+ * /getall:
  *   get:
  *     tags:
  *       - Service
@@ -67,6 +67,6 @@ router.post('/services/signup', serviceValidationRules, createService);
  *     security:
  *       - JWT: []
  */
-router.get('/services/getall', getAllServices);
+router.get('/getall', getAllServices);
 
 export default router;

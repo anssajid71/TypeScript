@@ -16,7 +16,6 @@ import swaggerUI from 'swagger-ui-express';
 
 const swaggerFilePath = 'swagger.json';
 
-// Check if the swagger.json file exists before generating it
 if (!fs.existsSync(swaggerFilePath)) {
   const options = {
     swaggerDefinition: {

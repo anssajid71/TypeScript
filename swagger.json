@@ -14,7 +14,7 @@
   },
   "swagger": "2.0",
   "paths": {
-    "/user/signin": {
+    "/signin": {
       "post": {
         "tags": [
           "User"
@@ -49,7 +49,7 @@
         ]
       }
     },
-    "/users/getall": {
+    "/getall": {
       "get": {
         "tags": [
           "User"
@@ -74,7 +74,7 @@
         ]
       }
     },
-    "/user/{id}": {
+    "/{id}": {
       "get": {
         "tags": [
           "User"
@@ -194,7 +194,7 @@
         ]
       }
     },
-    "/user/signup": {
+    "/signup": {
       "post": {
         "tags": [
           "User"
