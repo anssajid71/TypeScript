@@ -7,7 +7,6 @@ import companiesRoutes from './routes/companies.route';
 import bookingsRoutes from './routes/bookings.route';
 import attachmentsRoutes from './routes/attachments.route';
 import swaggerRoutes from './routes/swagger';
-import pool from './config/sequelize'
 import bodyParser from 'body-parser';
 import sequelize from './config/sequelize';
 
