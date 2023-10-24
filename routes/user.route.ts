@@ -181,17 +181,18 @@ router.get('/:id', (req: Request, res: Response) => {
  *       - JWT: []
  */
 router.put('/:id', (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id, 10);
-  const user = users.find((u) => u.id === userId);
-
-  if (user) {
-    // Update user attributes here based on req.body
-    // Modify this route implementation according to your needs
-    return res.status(200).json({ message: 'User updated successfully', user });
-  } else {
-    return res.status(404).json({ error: 'User not found' });
-  }
-});
+    const userId = parseInt(req.params.id, 10);
+    const userIndex = users.findIndex((u) => u.id === userId);
+  
+    if (userIndex !== -1) {
+      // Update user attributes here based on req.body
+      users[userIndex] = { ...users[userIndex], ...req.body };
+      return res.status(200).json({ message: 'User updated successfully', user: users[userIndex] });
+    } else {
+      return res.status(404).json({ error: 'User not found' });
+    }
+  });
+  
 
 /**
  * @swagger

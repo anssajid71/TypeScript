@@ -13,6 +13,8 @@ interface UserData {
 
 let users: UserData[] = [];
 
+
+
 export const signInUser = (req: Request, res: Response) => {
   const errors = validationResult(req);
 
@@ -34,6 +36,7 @@ const expiresIn = '1m';
 const token = generateToken({ data: { user: 'example' }, expiresIn });
   return res.status(200).json({ message: 'User signed in successfully', user, token });
 };
+
 
 export const createUser = (req: Request, res: Response) => {
   const errors = validationResult(req);

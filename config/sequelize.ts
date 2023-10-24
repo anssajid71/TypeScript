@@ -1,19 +1,11 @@
-import { Pool } from 'pg';
+import { Sequelize } from 'sequelize';
 
-const pool = new Pool({
-  user: 'manssajid',
-  host: 'localhost',
-  database: 'typescript_db',
+const sequelize = new Sequelize({
+  database: 'postgres',
+  username: 'typescript2',
   password: 'password',
-  port: 5432,
+  host: 'localhost', 
+  dialect: 'postgres',
 });
 
-pool.on('connect', () => {
-  console.log('Connected to the database');
-});
-
-pool.on('error', (err) => {
-  console.error('Error connecting to the database:', err);
-});
-
-export default pool;
+export default sequelize;

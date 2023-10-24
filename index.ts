@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import { Sequelize } from 'sequelize';
 import userRoutes from './routes/user.route';
 import serviceRoutes from './routes/services.route';
 import packageRoutes from './routes/packages.route';
@@ -8,6 +7,21 @@ import companiesRoutes from './routes/companies.route';
 import bookingsRoutes from './routes/bookings.route';
 import attachmentsRoutes from './routes/attachments.route';
 import swaggerRoutes from './routes/swagger';
+import pool from './config/sequelize'
+import bodyParser from 'body-parser';
+import sequelize from './config/sequelize';
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Database connection has been established successfully.');
+  })
+  .catch((err) => {
+    console.error('Unable to connect to the database:', err);
+  });
+
+
+
 
 import fs from 'fs';
 
@@ -36,6 +50,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(bodyParser.json());
+
 
 app.use('/user', userRoutes);
 app.use('/api-docs', swaggerRoutes);

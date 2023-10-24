@@ -1,26 +1,26 @@
 {
   "development": {
     "host": "localhost",
-    "user":"manssajid",
-    "password" :"password",
+    "user":"postgres",
+    "password" :"passwordp",
     "port":"5432",
     "dialect": "postgres",
-    "database": "typescript_db"
+    "database": "anssajid"
   },
   "test": {
     "host": "localhost",
-    "user":"manssajid",
-    "password" :"password",
+    "user":"postgres",
+    "password" :"passwordp",
     "port":"5432",
     "dialect": "postgres",
-    "database": "typescript_db"
+    "database": "anssajid"
     },
     "production": {
       "host": "localhost",
-      "user":"manssajid",
-      "password" :"password",
-      "port":"5432",
-      "dialect": "postgres",
-      "database": "typescript_db"
+    "user":"postgres",
+    "password" :"passwordp",
+    "port":"5432",
+    "dialect": "postgres",
+    "database": "anssajid"
     }
 }
