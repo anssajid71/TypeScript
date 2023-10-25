@@ -1,7 +1,7 @@
 {
   "development": {
     "host": "localhost",
-    "user":"typescript2",
+    "user":"newuser",
     "password" :"password",
     "port":"5432",
     "dialect": "postgres",
@@ -9,7 +9,7 @@
   },
   "test": {
     "host": "localhost",
-    "user":"typescript2",
+    "user":"newuser",
     "password" :"password",
     "port":"5432",
     "dialect": "postgres",
@@ -17,7 +17,7 @@
     },
     "production": {
       "host": "localhost",
-    "user":"typescript2",
+    "user":"newuser",
     "password" :"password",
     "port":"5432",
     "dialect": "postgres",
