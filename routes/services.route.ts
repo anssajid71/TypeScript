@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { createService, getAllServices } from '../controllers/services.controller';
-import { serviceValidationRules } from '../validations/services.validation';
+import { createService, getAllServices, getServiceById, updateService, deleteService } from '../controllers/services.controller';
 
 const router = Router();
 
@@ -12,9 +11,9 @@ const router = Router();
  *     properties:
  *       id:
  *         type: integer
- *       name:
- *         type: string
- *       description:
+ *       package_id:
+ *         type: integer
+ *       service_name:
  *         type: string
  *   ErrorResponse:
  *     type: object
@@ -47,7 +46,7 @@ const router = Router();
  *     security:
  *       - JWT: []
  */
-router.post('/signup', serviceValidationRules, createService);
+router.post('/signup', createService);
 
 /**
  * @swagger
@@ -68,5 +67,92 @@ router.post('/signup', serviceValidationRules, createService);
  *       - JWT: []
  */
 router.get('/getall', getAllServices);
+
+/**
+ * @swagger
+ * /{id}:
+ *   get:
+ *     tags:
+ *       - Service
+ *     summary: Get a service by ID
+ *     description: Returns a service by ID.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *         description: Service ID.
+ *     responses:
+ *       200:
+ *         description: Service found successfully.
+ *         schema:
+ *           $ref: '#/definitions/Service'
+ *       404:
+ *         description: Service not found.
+ *         schema:
+ *           $ref: '#/definitions/ErrorResponse'
+ *     security:
+ *       - JWT: []
+ */
+router.get('/:id', getServiceById);
+
+/**
+ * @swagger
+ * /{id}:
+ *   put:
+ *     tags:
+ *       - Service
+ *     summary: Update a service by ID
+ *     description: Updates a service by ID.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *         description: Service ID.
+ *       - name: Service
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Service'
+ *     responses:
+ *       200:
+ *         description: Service updated successfully.
+ *         schema:
+ *           $ref: '#/definitions/Service'
+ *       404:
+ *         description: Service not found.
+ *         schema:
+ *           $ref: '#/definitions/ErrorResponse'
+ *     security:
+ *       - JWT: []
+ */
+router.put('/:id', updateService);
+
+/**
+ * @swagger
+ * /{id}:
+ *   delete:
+ *     tags:
+ *       - Service
+ *     summary: Delete a service by ID
+ *     description: Deletes a service by ID.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *         description: Service ID.
+ *     responses:
+ *       204:
+ *         description: Service deleted successfully.
+ *       404:
+ *         description: Service not found.
+ *         schema:
+ *           $ref: '#/definitions/ErrorResponse'
+ *     security:
+ *       - JWT: []
+ */
+router.delete('/:id', deleteService);
 
 export default router;

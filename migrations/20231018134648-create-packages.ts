@@ -22,8 +22,30 @@ module.exports = {
           isEmail: true,
         },
       },
-      // Add other columns here
-      createdAt: {
+      price: {
+        type: DataTypes.FLOAT,
+      },
+      start_date: {
+        type: DataTypes.DATE,
+      },
+      end_date: {
+        type: DataTypes.DATE,
+      },
+      total_days: {
+        type: DataTypes.INTEGER,
+      },
+      type: {
+        type: DataTypes.STRING,
+      },
+      images: {
+        type: DataTypes.STRING,
+      },
+      available_seats: {
+        type: DataTypes.INTEGER,
+      },
+      location: {
+        type: DataTypes.STRING,
+      },      createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
       },

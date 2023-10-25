@@ -1,34 +1,21 @@
-'use strict';
-import { Model, DataTypes, Association, Sequelize } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
+import sequelize from '../config/sequelize';
+
 
 interface ServicesModelAttributes {
-  id: number; 
+  id: number;
   package_id: number;
   service_name: string;
 }
 
-interface ServicesModelCreationAttributes extends ServicesModelAttributes {
-}
+interface ServicesModelCreationAttributes extends ServicesModelAttributes {}
 
 class Services extends Model<ServicesModelAttributes, ServicesModelCreationAttributes> {
-  static initialize(sequelize: Sequelize) {
-    throw new Error('Method not implemented.');
-  }
-  public id!: number; 
+  public id!: number;
   public package_id!: number;
   public service_name!: string;
-
-  public static associate(models: any): void {
-    Services.hasMany(models.Packages, {
-      foreignKey: 'package_id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-      as: 'packages',
-    });
-  }
 }
 
-export function initServicesModel(sequelize: Sequelize): void {
   Services.init(
     {
       id: {
@@ -42,9 +29,9 @@ export function initServicesModel(sequelize: Sequelize): void {
     },
     {
       sequelize,
-      modelName: 'Services',
+    modelName: 'Services',
+    tableName: 'Services',
     }
   );
-}
 
 export default Services;

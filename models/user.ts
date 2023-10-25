@@ -1,86 +1,51 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
+import sequelize from '../config/sequelize';
 
-interface UserModelAttributes {
-  id: number; 
+interface UserAttributes {
+  id: number;
   name: string;
   email: string;
-  phone_number: string | null;
+  phone_number: string;
   password: string;
-  role: 'admin' | 'user';
+  role: string;
 }
-
-interface UserModelCreationAttributes extends UserModelAttributes {
-}
-
-class User extends Model<UserModelAttributes, UserModelCreationAttributes> {
-  public id!: number; 
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+  public id!: number;
   public name!: string;
   public email!: string;
-  public phone_number!: string | null;
+  public phone_number!: string;
   public password!: string;
-  public role!: 'admin' | 'user';
-
-  public static associate(models: any): void {
-    User.hasMany(models.Packages, {
-      foreignKey: 'id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-      as: 'users',
-    });
-
-    User.hasOne(models.Companies, {
-      foreignKey: 'user_id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-      as: 'companies',
-    });
-
-    User.hasMany(models.Booking, {
-      foreignKey: 'user_id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-      as: 'booking',
-    });
-  }
+  public role!: string;
 }
-
-export function initUserModel(sequelize: Sequelize): void {
-  User.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-      }, 
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: true,
-        },
-      },
-      phone_number: DataTypes.STRING,
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      role: {
-        type: DataTypes.ENUM('admin', 'user'),
-        allowNull: false,
-      },
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      sequelize,
-      modelName: 'User',
-      timestamps: true,
-    }
-  );
-}
+    name: {
+      type: DataTypes.STRING,
+    },
+    email: {
+      type: DataTypes.STRING,
+    },
+    phone_number: {
+      type: DataTypes.STRING,
+    },
+    password: {
+      type: DataTypes.STRING,
+    },
+    role: {
+      type: DataTypes.STRING,
+    },
+  },
+  {
+    sequelize,
+    modelName: 'Users',
+    tableName: 'Users',
+  }
+);
 
 export default User;
