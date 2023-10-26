@@ -20,18 +20,27 @@ export const createCompany = async (req: Request, res: Response) => {
   }
 
   try {
-    const newCompany: CompanyData = {
-      id: Companies.length + 1,
+    const { user_id, name, logo, phone_number, payment_status } = req.body;
+    const existingCompany = await Companies.findOne({ where: { user_id } });
+
+    if (existingCompany) {
+      return res.status(400).json({ error: 'User with the same user_id already exists' });
+    }
+
+    const newCompany = await Companies.create({
+      id: req.body.id,
       user_id: req.body.user_id,
       name: req.body.name,
       logo: req.body.logo || null,
       phone_number: req.body.phone_number || null,
       payment_status: req.body.payment_status || null,
-    };
+    });
     const expiresIn = '1m';
     const token = generateToken({ data: { user: 'example' }, expiresIn });
-    res.status(201).json({ message: 'Company created successfully', company: newCompany, token });
+
+    res.status(201).json({ message: 'Company created successfully', company: newCompany, expiresIn, token });
   } catch (error) {
+    console.error('Error creating the company:', error);
     res.status(500).json({ error: 'An error occurred while creating the company' });
   }
 };

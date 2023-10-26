@@ -1,5 +1,6 @@
 'use strict';
-import { Model, DataTypes, Association, Sequelize } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/sequelize';
 
 interface HotelsModelAttributes {
   id: number;
@@ -10,14 +11,10 @@ interface HotelsModelAttributes {
   price: number | null;
 }
 
-interface HotelsModelCreationAttributes extends HotelsModelAttributes {
-}
+interface HotelsCreationAttributes extends HotelsModelAttributes {}
 
-class Hotels extends Model<HotelsModelAttributes, HotelsModelCreationAttributes> {
-  static initialize(sequelize: Sequelize) {
-    throw new Error('Method not implemented.');
-  }
-  public id!: number; 
+class Hotels extends Model<HotelsModelAttributes, HotelsCreationAttributes> {
+  public id!: number;
   public hotel_name!: string;
   public location!: string;
   public images!: string | null;
@@ -26,7 +23,7 @@ class Hotels extends Model<HotelsModelAttributes, HotelsModelCreationAttributes>
 
   public static associate(models: any): void {
     Hotels.hasMany(models.Packages, {
-      foreignKey: 'id',
+      foreignKey: 'hotelId',
       as: 'packages',
     });
     Hotels.belongsTo(models.Attachments, {
@@ -36,26 +33,24 @@ class Hotels extends Model<HotelsModelAttributes, HotelsModelCreationAttributes>
   }
 }
 
-export function initHotelsModel(sequelize: Sequelize): void {
-  Hotels.init(
-    {
-      id: {
-        type: DataTypes.INTEGER, 
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      hotel_name: DataTypes.STRING,
-      location: DataTypes.STRING,
-      images: DataTypes.STRING,
-      description: DataTypes.TEXT,
-      price: DataTypes.DECIMAL,
+Hotels.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      sequelize,
-      modelName: 'Hotels',
-    }
-  );
-}
+    hotel_name: DataTypes.STRING,
+    location: DataTypes.STRING,
+    images: DataTypes.STRING,
+    description: DataTypes.TEXT,
+    price: DataTypes.DECIMAL,
+  },
+  {
+    sequelize,
+    modelName: 'Hotels',
+  }
+);
 
 export default Hotels;

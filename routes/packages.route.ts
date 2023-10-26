@@ -50,7 +50,7 @@ const router = Router();
 
 /**
  * @swagger
- * /signup:
+ * /create:
  *   post:
  *     tags:
  *       - Packages
@@ -76,7 +76,7 @@ const router = Router();
  */
 
 
-router.post('/signup', createPackageValidationRules, createPackage);
+router.post('/create', createPackageValidationRules, createPackage);
 
 /**
  * @swagger

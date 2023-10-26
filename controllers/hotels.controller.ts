@@ -1,96 +1,111 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import Hostel from '../models/hotels'; // Import the Hostel Sequelize model
 import { generateToken } from '../config/generatetoken';
+import Hotel from '../models/hotels';
 
-export const createHostel = async (req: Request, res: Response) => {
+export const createHotel = async (req: Request, res: Response) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+
   try {
-    // Create a hostel in the database using Sequelize
-    const newHostel = await Hostel.create({
-      id: req.body.id, // Include an "id" field if necessary
-      hotel_name: req.body.hotel_name,
-      location: req.body.location,
-      images: req.body.images || null,
-      description: req.body.description || null,
-      price: req.body.price || null,
+    const { hotel_name, location, images, description, price } = req.body;
+    const existingHotel = await Hotel.findOne({ where: { hotel_name } });
+
+    if (existingHotel) {
+      return res.status(400).json({ error: 'Hotel name already exists' });
+    }
+    const newHotel = await Hotel.create({
+      id: req.body.id,
+      hotel_name,
+      location,
+      images,
+      description,
+      price,
     });
 
-    // You can perform additional tasks here, e.g., generate a token or perform other operations.
+    const expiresIn = '1m';
+    const token = generateToken({ data: { hotel: newHotel }, expiresIn });
 
-    res.status(201).json({ message: 'Hostel created successfully', hostel: newHostel });
+    res.status(201).json({ message: 'Hotel created successfully', hotel: newHotel, expiresIn, token });
   } catch (error) {
-    console.error('Error creating the hostel:', error);
-    res.status(500).json({ error: 'An error occurred while creating the hostel' });
+    console.error('Error creating the hotel:', error);
+    res.status(500).json({ error: 'An error occurred while creating the hotel' });
   }
 };
 
-export const getAllHostels = async (req: Request, res: Response) => {
+export const getAllHotels = async (req: Request, res: Response) => {
   try {
-    const hostels = await Hostel.findAll();
-    res.json({ message: 'All hostels retrieved successfully', hostels });
+    const hotels = await Hotel.findAll();
+    res.json({ message: 'All hotels retrieved successfully', hotels });
   } catch (error) {
-    console.error('Error retrieving hostels:', error);
-    res.status(500).json({ error: 'An error occurred while retrieving hostels' });
+    console.error('Error retrieving hotels:', error);
+    res.status(500).json({ error: 'An error occurred while retrieving hotels' });
   }
 };
 
-export const getHostelById = async (req: Request, res: Response) => {
-  const hostelId = parseInt(req.params.id, 10);
+export const getHotelById = async (req: Request, res: Response) => {
+  const hotelId = parseInt(req.params.id, 10);
   try {
-    const hostel = await Hostel.findByPk(hostelId);
-
-    if (hostel) {
-      res.json({ message: 'Hostel retrieved successfully', hostel });
+    const hotel = await Hotel.findByPk(hotelId);
+    if (hotel) {
+      res.json({ message: 'Hotel retrieved successfully', hotel });
     } else {
-      res.status(404).json({ error: 'Hostel not found' });
+      res.status(404).json({ error: 'Hotel not found' });
     }
   } catch (error) {
-    console.error('Error retrieving hostel by ID:', error);
-    res.status(500).json({ error: 'An error occurred while retrieving the hostel' });
+    console.error('Error retrieving hotel by ID:', error);
+    res.status(500).json({ error: 'An error occurred while retrieving the hotel' });
   }
 };
 
-export const updateHostel = async (req: Request, res: Response) => {
-  const hostelId = parseInt(req.params.id, 10);
+export const updateHotel = async (req: Request, res: Response) => {
+  const hotelId = parseInt(req.params.id, 10);
   try {
-    const hostel = await Hostel.findByPk(hostelId);
+    const hotel = await Hotel.findByPk(hotelId);
 
-    if (hostel) {
-      hostel.hotel_name = req.body.hotel_name;
-      hostel.location = req.body.location;
-      hostel.images = req.body.images || null;
-      hostel.description = req.body.description || null;
-      hostel.price = req.body.price || null;
-      
-      await hostel.save(); // Save the changes to the database
-      
-      res.json({ message: 'Hostel updated successfully', hostel });
+    if (hotel) {
+      hotel.hotel_name = req.body.hotel_name;
+      hotel.location = req.body.location;
+      hotel.images = req.body.images;
+      hotel.description = req.body.description;
+      hotel.price = req.body.price;
+
+      await hotel.save();
+
+      const expiresIn = '1m';
+      const token = generateToken({ data: { hotel }, expiresIn });
+
+      return res.status(200).json({
+        message: 'Hotel updated successfully',
+        hotel,
+        token,
+        expiresIn,
+      });
     } else {
-      res.status(404).json({ error: 'Hostel not found' });
+      return res.status(404).json({ error: 'Hotel not found' });
     }
   } catch (error) {
-    console.error('Error updating hostel:', error);
-    res.status(500).json({ error: 'An error occurred while updating the hostel' });
+    console.error('Error updating the hotel:', error);
+    return res.status(500).json({ error: 'An error occurred while updating the hotel' });
   }
 };
 
-export const deleteHostel = async (req: Request, res: Response) => {
-  const hostelId = parseInt(req.params.id, 10);
+export const deleteHotel = async (req: Request, res: Response) => {
+  const hotelId = parseInt(req.params.id, 10);
   try {
-    const hostel = await Hostel.findByPk(hostelId);
+    const hotel = await Hotel.findByPk(hotelId);
 
-    if (hostel) {
-      await hostel.destroy();
-      res.status(204).json({ message: 'Hostel deleted successfully' });
+    if (hotel) {
+      await hotel.destroy();
+      res.status(204).json({ message: 'Hotel deleted successfully' });
     } else {
-      res.status(404).json({ error: 'Hostel not found' });
+      res.status(404).json({ error: 'Hotel not found' });
     }
   } catch (error) {
-    console.error('Error deleting hostel:', error);
-    res.status(500).json({ error: 'An error occurred while deleting the hostel' });
+    console.error('Error deleting the hotel:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the hotel' });
   }
 };

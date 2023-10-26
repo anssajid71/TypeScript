@@ -1,4 +1,6 @@
-import { Model, DataTypes, Association, Sequelize } from 'sequelize';
+'use strict';
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/sequelize';
 
 interface BookingModelAttributes {
   id: number; 
@@ -12,16 +14,12 @@ interface BookingModelAttributes {
   status: 'pending' | 'confirmed' | 'canceled';
   payment_method: string;
   payment_status: 'pending' | 'completed' | 'failed';
-  payment_date: string;
 }
 
-interface BookingModelCreationAttributes extends BookingModelAttributes {
-}
+interface BookingModelCreationAttributes extends BookingModelAttributes {}
 
 class Booking extends Model<BookingModelAttributes, BookingModelCreationAttributes> {
-  static initialize(sequelize: Sequelize) {
-    throw new Error('Method not implemented.');
-  }
+  
   public id!: number; 
   public user_id!: number;
   public package_id!: number;
@@ -48,7 +46,6 @@ class Booking extends Model<BookingModelAttributes, BookingModelCreationAttribut
   }
 }
 
-export function initBookingModel(sequelize: Sequelize): void {
   Booking.init(
     {
       id: {
@@ -66,13 +63,11 @@ export function initBookingModel(sequelize: Sequelize): void {
       status: DataTypes.ENUM('pending', 'confirmed', 'canceled'),
       payment_method: DataTypes.STRING,
       payment_status: DataTypes.ENUM('pending', 'completed', 'failed'),
-      payment_date: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: 'Booking',
     }
   );
-}
 
 export default Booking;

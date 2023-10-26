@@ -58,7 +58,7 @@ const router = Router();
  */
 
 
-router.post('/create', hotelValidationRules, hotelController.createHostel);
+router.post('/create', hotelValidationRules, hotelController.createHotel);
 
 /**
  * @swagger
@@ -79,7 +79,7 @@ router.post('/create', hotelValidationRules, hotelController.createHostel);
  *       - JWT: []
  */
 
-router.get('/getall', hotelController.getAllHostels);
+router.get('/getall', hotelController.getAllHotels);
 
 /**
  * @swagger
@@ -109,7 +109,7 @@ router.get('/getall', hotelController.getAllHostels);
  */
 
 
-router.get('/:id', hotelController.getHostelById);
+router.get('/:id', hotelController.getHotelById);
 
 /**
  * @swagger
@@ -144,7 +144,7 @@ router.get('/:id', hotelController.getHostelById);
  */
 
 
-router.put('/:id', hotelValidationRules, hotelController.updateHostel);
+router.put('/:id', hotelValidationRules, hotelController.updateHotel);
 
 /**
  * @swagger
@@ -171,6 +171,6 @@ router.put('/:id', hotelValidationRules, hotelController.updateHostel);
  *       - JWT: []
  */
 
-router.delete('/:id', hotelController.deleteHostel);
+router.delete('/:id', hotelController.deleteHotel);
 
 export default router;

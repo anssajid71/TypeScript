@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/user';
 import { generateToken } from '../config/generatetoken';
+import bcrypt from 'bcrypt';
 
 interface UserData {
   id: number;
@@ -20,19 +21,20 @@ export const createUser = async (req: Request, res: Response) => {
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
       name,
       email,
       phone_number,
-      password,
+      password: hashedPassword,
       role,
     });
 
     const expiresIn = '1m';
     const token = generateToken({ data: { user: newUser }, expiresIn });
 
-    res.status(201).json({ message: 'User created successfully', user: newUser, token, expiresIn });
+    res.status(201).json({ message: 'User created successfully', user: newUser,expiresIn, token });
   } catch (error) {
     console.error('Error creating the user:', error);
     res.status(500).json({ error: 'An error occurred while creating the user' });
@@ -85,7 +87,7 @@ export const updateUser = async (req: Request, res: Response) => {
       user.password = req.body.password;
       user.role = req.body.role;
 
-      await user.save(); // Save the updated user
+      await user.save();
 
       const expiresIn = '1m';
       const token = generateToken({ data: { user }, expiresIn });

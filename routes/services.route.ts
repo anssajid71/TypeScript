@@ -26,7 +26,7 @@ const router = Router();
 
 /**
  * @swagger
- * /signup:
+ * /create:
  *   post:
  *     tags:
  *       - Service
@@ -46,7 +46,7 @@ const router = Router();
  *     security:
  *       - JWT: []
  */
-router.post('/signup', createService);
+router.post('/create', createService);
 
 /**
  * @swagger

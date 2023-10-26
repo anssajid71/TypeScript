@@ -1,7 +1,10 @@
-import { Model, DataTypes, Association, Sequelize } from 'sequelize';
+'use strict';
+
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/sequelize';
 
 interface CompaniesModelAttributes {
-  id: number; 
+  id: number;
   user_id: number;
   name: string;
   logo: string | null;
@@ -9,11 +12,10 @@ interface CompaniesModelAttributes {
   payment_status: string | null;
 }
 
-interface CompaniesModelCreationAttributes extends CompaniesModelAttributes {
-}
+interface CompaniesModelCreationAttributes extends CompaniesModelAttributes {}
 
 class Companies extends Model<CompaniesModelAttributes, CompaniesModelCreationAttributes> {
-  public id!: number; 
+  public id!: number;
   public user_id!: number;
   public name!: string;
   public logo!: string | null;
@@ -21,14 +23,8 @@ class Companies extends Model<CompaniesModelAttributes, CompaniesModelCreationAt
   public payment_status!: string | null;
 
   public static associate(models: any): void {
-    Companies.belongsTo(models.User, {
-      foreignKey: 'user_id',
-      as: 'user',
-    });
   }
 }
-
-export function initCompaniesModel(sequelize: Sequelize): void {
   Companies.init(
     {
       id: {
@@ -47,6 +43,5 @@ export function initCompaniesModel(sequelize: Sequelize): void {
       modelName: 'Companies',
     }
   );
-}
 
 export default Companies;
