@@ -1,7 +1,10 @@
-import { Model, DataTypes, Association, Sequelize } from 'sequelize';
+'use strict';
+
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/sequelize';
 
 interface AttachmentsModelAttributes {
-  id: number; // Add the 'id' property
+  id: number;
   attachment_id: number;
   attachment_type: string;
   attachment_url: string;
@@ -29,8 +32,6 @@ class Attachments extends Model<AttachmentsModelAttributes, AttachmentsModelCrea
     });
   }
 }
-
-export function initAttachmentsModel(sequelize: Sequelize): void {
   Attachments.init(
     {
       id: {
@@ -49,6 +50,5 @@ export function initAttachmentsModel(sequelize: Sequelize): void {
       modelName: 'Attachments',
     }
   );
-}
 
 export default Attachments;
