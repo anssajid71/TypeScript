@@ -15,7 +15,7 @@ export const createHotel = async (req: Request, res: Response) => {
     const existingHotel = await Hotel.findOne({ where: { hotel_name } });
 
     if (existingHotel) {
-      return res.status(400).json({ error: 'Hotel name already exists' });
+      return res.status(400).json({ error: 'This Hotel is already full' });
     }
     const newHotel = await Hotel.create({
       id: req.body.id,

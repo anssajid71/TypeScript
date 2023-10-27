@@ -62,7 +62,6 @@ app.use('/companies', companiesRoutes);
 app.use('/bookings', bookingsRoutes);
 app.use('/attachments', attachmentsRoutes);
 
-// Read the contents of the swagger.json file and parse it to a JSON object
 const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, 'utf8'));
 
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
