@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import User from '../models/user';
 import { generateToken } from '../config/generatetoken';
 import bcrypt from 'bcrypt';
+import { EventEmitter } from 'events';
 
 interface UserData {
   id: number;
@@ -11,6 +12,14 @@ interface UserData {
   password: string;
   role: string;
 }
+
+const userEvents = new EventEmitter();
+
+userEvents.on('userCreated', (user: UserData) => {
+  console.log('User created:', user);
+
+  sendWelcomeEmail(user.email);
+});
 
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, phone_number, password, role } = req.body;
@@ -34,7 +43,9 @@ export const createUser = async (req: Request, res: Response) => {
     const expiresIn = '1m';
     const token = generateToken({ data: { user: newUser }, expiresIn });
 
-    res.status(201).json({ message: 'User created successfully', user: newUser,expiresIn, token });
+    userEvents.emit('userCreated', newUser);
+
+    res.status(201).json({ message: 'User created successfully', user: newUser, expiresIn, token });
   } catch (error) {
     console.error('Error creating the user:', error);
     res.status(500).json({ error: 'An error occurred while creating the user' });
@@ -49,7 +60,9 @@ export const signInUser = async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Invalid Email address' });
   }
 
-  if (user.password !== req.body.password) {
+  const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+
+  if (!passwordMatch) {
     return res.status(401).json({ error: 'Invalid password' });
   }
 
@@ -84,7 +97,10 @@ export const updateUser = async (req: Request, res: Response) => {
       user.name = req.body.name;
       user.email = req.body.email;
       user.phone_number = req.body.phone_number;
-      user.password = req.body.password;
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      user.password = hashedPassword;
+
       user.role = req.body.role;
 
       await user.save();
@@ -96,7 +112,7 @@ export const updateUser = async (req: Request, res: Response) => {
         message: 'User updated successfully',
         user,
         expiresIn,
-        token
+        token,
       });
     } catch (error) {
       console.error('Error updating the user:', error);
@@ -123,3 +139,6 @@ export const deleteUser = async (req: Request, res: Response) => {
     return res.status(404).json({ error: 'User not found' });
   }
 };
+function sendWelcomeEmail(email: string) {
+  console.log(`Sending a welcome email to ${email}`);
+}
