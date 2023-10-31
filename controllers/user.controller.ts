@@ -16,7 +16,8 @@ interface UserData {
 const userEvents = new EventEmitter();
 
 userEvents.on('userCreated', (user: UserData) => {
-  console.log('User created:', user);
+  const formattedUser = formatUserForLogging(user);
+  console.log('User created:', formattedUser);
 
   sendWelcomeEmail(user.email);
 });
@@ -50,8 +51,17 @@ export const createUser = async (req: Request, res: Response) => {
     console.error('Error creating the user:', error);
     res.status(500).json({ error: 'An error occurred while creating the user' });
   }
-};
-
+}; 
+    function formatUserForLogging(user: UserData) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    phone_number: user.phone_number,
+    password: user.password,
+    role: user.role,
+  };
+}
 export const signInUser = async (req: Request, res: Response) => {
   const userEmail = req.body.email;
   const user = await User.findOne({ where: { email: userEmail } });
