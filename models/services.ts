@@ -1,37 +1,17 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
-import sequelize from '../config/sequelize';
+import mongoose, { Document, Schema } from 'mongoose';
 
-
-interface ServicesModelAttributes {
-  id: number;
+interface ServicesAttributes {
   package_id: number;
   service_name: string;
 }
 
-interface ServicesModelCreationAttributes extends ServicesModelAttributes {}
+export interface ServicesDocument extends ServicesAttributes, Document {}
 
-class Services extends Model<ServicesModelAttributes, ServicesModelCreationAttributes> {
-  public id!: number;
-  public package_id!: number;
-  public service_name!: string;
-}
+const servicesSchema = new Schema<ServicesDocument>({
+  package_id: { type: Number, required: true },
+  service_name: { type: String, required: true },
+});
 
-  Services.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      package_id: DataTypes.INTEGER,
-      service_name: DataTypes.STRING,
-    },
-    {
-      sequelize,
-    modelName: 'Services',
-    tableName: 'Services',
-    }
-  );
+const ServicesModel = mongoose.model<ServicesDocument>('Services', servicesSchema);
 
-export default Services;
+export default ServicesModel;

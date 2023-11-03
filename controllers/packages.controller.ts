@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-import { generateToken } from '../config/generatetoken';
-import Packages from '../models/packages';
+import PackageModel, { PackageDocument } from '../models/packages';
 
 export const createPackage = async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+  const { name, email, price, start_date, end_date, total_days, type, images, available_seats, location } = req.body;
 
   try {
-    const {
+    const existingPackage = await PackageModel.findOne({ email });
+
+    if (existingPackage) {
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
+    const newPackage = new PackageModel({
       name,
       email,
       price,
@@ -22,31 +22,11 @@ export const createPackage = async (req: Request, res: Response) => {
       images,
       available_seats,
       location,
-    } = req.body;
-
-    const existingPackage = await Packages.findOne({ where: { email } });
-
-    if (existingPackage) {
-      return res.status(400).json({ error: 'Email already exists' });
-    }
-
-    const newPackage = await Packages.create({
-      name,
-      email,
-      price,
-      start_date: new Date(start_date),
-      end_date: new Date(end_date),
-      total_days,
-      type,
-      images,
-      available_seats,
-      location,
     });
 
-    const expiresIn = '1m';
-    const token = generateToken({ data: { user: 'example' }, expiresIn });
+    await newPackage.save();
 
-    res.status(200).json({ message: 'Package created successfully', package: newPackage,expiresIn, token  });
+    res.status(201).json({ message: 'Package created successfully', package: newPackage });
   } catch (error) {
     console.error('Error creating the package:', error);
     res.status(500).json({ error: 'An error occurred while creating the package' });
@@ -55,7 +35,7 @@ export const createPackage = async (req: Request, res: Response) => {
 
 export const getAllPackages = async (req: Request, res: Response) => {
   try {
-    const packages = await Packages.findAll();
+    const packages = await PackageModel.find();
     res.json({ message: 'All packages retrieved successfully', packages });
   } catch (error) {
     console.error('Error retrieving packages:', error);
@@ -64,71 +44,59 @@ export const getAllPackages = async (req: Request, res: Response) => {
 };
 
 export const getPackageById = async (req: Request, res: Response) => {
-  const packageId = parseInt(req.params.id, 10);
+  const packageId = req.params.id;
+
   try {
-    const pkg = await Packages.findByPk(packageId);
-    if (pkg) {
-      res.json({ message: 'Package retrieved successfully', package: pkg });
+    const Packages = await PackageModel.findById(packageId);
+
+    if (Packages) {
+      res.json({ message: 'Package retrieved successfully', Packages });
     } else {
       res.status(404).json({ error: 'Package not found' });
     }
   } catch (error) {
     console.error('Error retrieving package by ID:', error);
-    res.status(500).json({ error: 'An error occurred while retrieving the package' });
+    res.status(500).json({ error: 'An error occurred while retrieving package' });
   }
 };
 
 export const updatePackage = async (req: Request, res: Response) => {
-  const packageId = parseInt(req.params.id, 10);
-  const pkg = await Packages.findByPk(packageId);
+  const packageId = req.params.id;
 
-  if (pkg) {
-    try {
-      pkg.name = req.body.name;
-      pkg.email = req.body.email;
-      pkg.price = req.body.price;
-      pkg.start_date = new Date(req.body.start_date);
-      pkg.end_date = new Date(req.body.end_date);
-      pkg.total_days = req.body.total_days;
-      pkg.type = req.body.type;
-      pkg.images = req.body.images;
-      pkg.available_seats = req.body.available_seats;
-      pkg.location = req.body.location;
+  try {
+    const Packages = await PackageModel.findById(packageId);
 
-      await pkg.save();
-
-      const expiresIn = '1m';
-      const token = generateToken({ data: { user: 'example' }, expiresIn });
+    if (Packages) {
+      Packages.set(req.body);
+      await Packages.save();
 
       return res.status(200).json({
         message: 'Package updated successfully',
-        package: pkg,
-        token,
-        expiresIn,
+        Packages,
       });
-    } catch (error) {
-      console.error('Error updating the package:', error);
-      return res.status(500).json({ error: 'An error occurred while updating the package' });
+    } else {
+      return res.status(404).json({ error: 'Package not found' });
     }
-  } else {
-    return res.status(404).json({ error: 'Package not found' });
+  } catch (error) {
+    console.error('Error updating the package:', error);
+    return res.status(500).json({ error: 'An error occurred while updating the package' });
   }
 };
 
-
 export const deletePackage = async (req: Request, res: Response) => {
-  const packageId = parseInt(req.params.id, 10);
-  try {
-    const pkg = await Packages.findByPk(packageId);
+  const packageId = req.params.id;
 
-    if (pkg) {
-      await pkg.destroy();
-      res.status(204).json({ message: 'Package deleted successfully' });
+  try {
+    const Packages = await PackageModel.findById(packageId);
+
+    if (Packages) {
+      await Packages.deleteOne();
+      return res.status(204).json({ message: 'Package deleted successfully' });
     } else {
-      res.status(404).json({ error: 'Package not found' });
+      return res.status(404).json({ error: 'Package not found' });
     }
   } catch (error) {
     console.error('Error deleting the package:', error);
-    res.status(500).json({ error: 'An error occurred while deleting the package' });
+    return res.status(500).json({ error: 'An error occurred while deleting the package' });
   }
 };

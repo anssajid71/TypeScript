@@ -1,41 +1,22 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import BookingModel, { IBooking } from '../models/booking';
 import { generateToken } from '../config/generatetoken';
-import Booking from '../models/booking';
 
-interface BookingData {
-  id: number;
-  user_id: number;
-  package_id: number;
-  date: Date;
-  type: string;
-  total_number_of_persons: number;
-  pickup_location: string;
-  total_cost: number;
-  status: string;
-  payment_method: string;
-  payment_status: string;
-  payment_date: Date;
-}
 
 export const createBooking = async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+  const bookingData: IBooking = req.body;
 
   try {
-    const existingBooking = await Booking.findOne({ where: { user_id: req.body.user_id } });
+    const existingBooking = await BookingModel.findOne({ user_id: bookingData.user_id });
 
     if (existingBooking) {
       return res.status(400).json({ error: 'Booking with the same user_id already exists' });
     }
 
-    const newBooking = await Booking.create(req.body);
+    const newBooking = await BookingModel.create(bookingData);
 
     const expiresIn = '1m';
-    const token = generateToken({ data: { user: 'example' }, expiresIn });
+    const token = generateToken({ booking: newBooking }, expiresIn);
 
     res.status(201).json({ message: 'Booking created successfully', booking: newBooking, expiresIn, token });
   } catch (error) {
@@ -46,7 +27,7 @@ export const createBooking = async (req: Request, res: Response) => {
 
 export const getAllBookings = async (req: Request, res: Response) => {
   try {
-    const bookings = await Booking.findAll();
+    const bookings = await BookingModel.find();
     res.json({ message: 'All bookings retrieved successfully', bookings });
   } catch (error) {
     console.error('Error retrieving bookings:', error);
@@ -55,10 +36,10 @@ export const getAllBookings = async (req: Request, res: Response) => {
 };
 
 export const getBookingById = async (req: Request, res: Response) => {
-  const bookingId = parseInt(req.params.id, 10);
+  const bookingId = req.params.id;
 
   try {
-    const booking = await Booking.findByPk(bookingId);
+    const booking = await BookingModel.findById(bookingId);
 
     if (booking) {
       res.json({ message: 'Booking retrieved successfully', booking });
@@ -72,19 +53,15 @@ export const getBookingById = async (req: Request, res: Response) => {
 };
 
 export const updateBooking = async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const bookingId = parseInt(req.params.id, 10);
+  const bookingId = req.params.id;
+  const bookingData: IBooking = req.body;
 
   try {
-    const existingBooking = await Booking.findByPk(bookingId);
+    const existingBooking = await BookingModel.findById(bookingId);
 
     if (existingBooking) {
-      await existingBooking.update(req.body);
+      existingBooking.set(bookingData);
+      await existingBooking.save();
       res.json({ message: 'Booking updated successfully', booking: existingBooking });
     } else {
       res.status(404).json({ error: 'Booking not found' });
@@ -96,13 +73,13 @@ export const updateBooking = async (req: Request, res: Response) => {
 };
 
 export const deleteBooking = async (req: Request, res: Response) => {
-  const bookingId = parseInt(req.params.id, 10);
+  const bookingId = req.params.id;
 
   try {
-    const existingBooking = await Booking.findByPk(bookingId);
+    const existingBooking = await BookingModel.findById(bookingId);
 
     if (existingBooking) {
-      await existingBooking.destroy();
+      await existingBooking.deleteOne();
       res.status(204).json({ message: 'Booking deleted successfully' });
     } else {
       res.status(404).json({ error: 'Booking not found' });

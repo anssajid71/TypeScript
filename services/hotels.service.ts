@@ -1,25 +1,23 @@
-import Hotels  from '../models/hotels';
+import HotelModel, { HotelDocument } from '../models/hotels';
 
 const createHotel = async (hotelData: any) => {
   try {
-    const newHotel = await Hotels.create(hotelData);
+    const newHotel = new HotelModel(hotelData);
+    await newHotel.save();
     return newHotel;
   } catch (error) {
     throw error;
   }
 };
 
-const updateHotel = async (userId: number, userData: any) => {
+const updateHotel = async (hotelId: string, hotelData: any) => {
   try {
-    const [rowsUpdated] = await Hotels.update(userData, {
-      where: { id: userId },
-    });
-
-    if (rowsUpdated === 0) {
-      throw new Error('User not found or no updates were made.');
+    const updatedHotel = await HotelModel.findByIdAndUpdate(hotelId, hotelData, { new: true });
+    
+    if (!updatedHotel) {
+      throw new Error('Hotel not found or no updates were made.');
     }
-
-    const updatedHotel = await Hotels.findByPk(userId);
+    
     return updatedHotel;
   } catch (error) {
     throw error;
@@ -28,29 +26,32 @@ const updateHotel = async (userId: number, userData: any) => {
 
 const getAllHotels = async () => {
   try {
-    const hotels = await Hotels.findAll();
+    const hotels = await HotelModel.find();
     return hotels;
   } catch (error) {
     throw error;
   }
 };
 
-const getHotelById = async (hotelId: number) => {
+const getHotelById = async (hotelId: string) => {
   try {
-    const hotel = await Hotels.findByPk(hotelId);
+    const hotel = await HotelModel.findById(hotelId);
+    
+    if (!hotel) {
+      throw new Error('Hotel not found.');
+    }
+    
     return hotel;
   } catch (error) {
     throw error;
   }
 };
 
-const deleteHotel = async (hotelId: number) => {
+const deleteHotel = async (hotelId: string) => {
   try {
-    const rowsDeleted = await Hotels.destroy({
-      where: { id: hotelId },
-    });
-
-    if (rowsDeleted === 0) {
+    const deletedHotel = await HotelModel.findByIdAndRemove(hotelId);
+    
+    if (!deletedHotel) {
       throw new Error('Hotel not found or no deletions were made.');
     }
   } catch (error) {

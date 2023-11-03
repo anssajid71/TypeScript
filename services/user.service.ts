@@ -1,41 +1,35 @@
-import User  from '../models/user';
+import UserModel, { UserDocument } from '../models/user';
 import bcrypt from 'bcrypt';
 
-const createUser = async (userData: any) => {
+const createUser = async (userData: UserDocument) => {
   try {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
-    userData.password = hashedPassword;
-    return await User.create(userData);
+    const newUser = new UserModel(userData);
+    await newUser.save();
+    return newUser;
   } catch (error) {
     throw error;
   }
 };
 
-const updateUser = async (userId: number, userData: any) => {
+const updateUser = async (userId: string, userData: UserDocument) => {
   try {
-    const [rowsUpdated] = await User.update(userData, {
-      where: { id: userId },
-    });
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, userData, { new: true });
 
-    if (rowsUpdated === 0) {
+    if (!updatedUser) {
       throw new Error('User not found or no updates were made.');
     }
 
-    const updatedUser = await User.findByPk(userId);
     return updatedUser;
   } catch (error) {
     throw error;
   }
 };
 
-const deleteUser = async (userId: number) => {
+const deleteUser = async (userId: string) => {
   try {
-    const rowsDeleted = await User.destroy({
-      where: { id: userId },
-    });
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
 
-    if (rowsDeleted === 0) {
+    if (!deletedUser) {
       throw new Error('User not found or no deletions were made.');
     }
   } catch (error) {
@@ -43,9 +37,9 @@ const deleteUser = async (userId: number) => {
   }
 };
 
-const getUserById = async (userId: number) => {
+const getUserById = async (userId: string) => {
   try {
-    const user = await User.findByPk(userId);
+    const user = await UserModel.findById(userId);
     return user;
   } catch (error) {
     throw error;
@@ -54,7 +48,7 @@ const getUserById = async (userId: number) => {
 
 const getAllUser = async () => {
   try {
-    const users = await User.findAll();
+    const users = await UserModel.find();
     return users;
   } catch (error) {
     throw error;
@@ -63,7 +57,7 @@ const getAllUser = async () => {
 
 const findUserByEmail = async (email: string) => {
   try {
-    return await User.findOne({ where: { email } });
+    return await UserModel.findOne({ email });
   } catch (error) {
     throw error;
   }

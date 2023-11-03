@@ -1,6 +1,4 @@
 import { Router } from 'express';
-import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
 import {
   createUser,
   signInUser,
@@ -9,9 +7,6 @@ import {
   updateUser,
   deleteUser,
 } from '../controllers/user.controller';
-import {
-  createUservalidations,
-} from '../validations/user.validation';
 
 const router = Router();
 

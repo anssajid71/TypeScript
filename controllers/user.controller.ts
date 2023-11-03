@@ -1,70 +1,41 @@
 import { Request, Response } from 'express';
-import User from '../models/user';
+import UserModel, { UserDocument } from '../models/user';
 import { generateToken } from '../config/generatetoken';
 import bcrypt from 'bcrypt';
-import { EventEmitter } from 'events';
-
-interface UserData {
-  id: number;
-  name: string;
-  email: string;
-  phone_number: string;
-  password: string;
-  role: string;
-}
-
-const userEvents = new EventEmitter();
-
-userEvents.on('userCreated', (user: UserData) => {
-  const formattedUser = formatUserForLogging(user);
-  console.log('User created:', formattedUser);
-
-  sendWelcomeEmail(user.email);
-});
 
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, phone_number, password, role } = req.body;
 
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await UserModel.findOne({ email });
 
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
+    const newUser = new UserModel({
       name,
       email,
       phone_number,
-      password: hashedPassword,
+      password,
       role,
     });
 
     const expiresIn = '1m';
-    const token = generateToken({ data: { user: newUser }, expiresIn });
+    const token = generateToken({ user: newUser }, expiresIn);
 
-    userEvents.emit('userCreated', newUser);
+    await newUser.save();
 
     res.status(201).json({ message: 'User created successfully', user: newUser, expiresIn, token });
   } catch (error) {
     console.error('Error creating the user:', error);
     res.status(500).json({ error: 'An error occurred while creating the user' });
   }
-}; 
-    function formatUserForLogging(user: UserData) {
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    phone_number: user.phone_number,
-    password: user.password,
-    role: user.role,
-  };
-}
+};
+
 export const signInUser = async (req: Request, res: Response) => {
   const userEmail = req.body.email;
-  const user = await User.findOne({ where: { email: userEmail } });
+  const user = await UserModel.findOne({ email: userEmail });
 
   if (!user) {
     return res.status(401).json({ error: 'Invalid Email address' });
@@ -77,19 +48,19 @@ export const signInUser = async (req: Request, res: Response) => {
   }
 
   const expiresIn = '1m';
-  const token = generateToken({ data: { user }, expiresIn });
+  const token = generateToken({ user }, expiresIn);
 
   return res.status(200).json({ message: 'User signed in successfully', user, token });
 };
 
 export const getAllUsers = async (req: Request, res: Response) => {
-  const users = await User.findAll();
+  const users = await UserModel.find();
   res.json({ message: 'All users retrieved successfully', users });
 };
 
 export const getUserById = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id, 10);
-  const user = await User.findByPk(userId);
+  const userId = req.params.id;
+  const user = await UserModel.findById(userId);
 
   if (user) {
     res.json({ message: 'User retrieved successfully', user });
@@ -99,11 +70,12 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id, 10);
-  const user = await User.findByPk(userId);
+  const userId = req.params.id;
 
-  if (user) {
-    try {
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (user) {
       user.name = req.body.name;
       user.email = req.body.email;
       user.phone_number = req.body.phone_number;
@@ -116,7 +88,7 @@ export const updateUser = async (req: Request, res: Response) => {
       await user.save();
 
       const expiresIn = '1m';
-      const token = generateToken({ data: { user }, expiresIn });
+      const token = generateToken({ user }, expiresIn);
 
       return res.status(200).json({
         message: 'User updated successfully',
@@ -124,31 +96,29 @@ export const updateUser = async (req: Request, res: Response) => {
         expiresIn,
         token,
       });
-    } catch (error) {
-      console.error('Error updating the user:', error);
-      return res.status(500).json({ error: 'An error occurred while updating the user' });
+    } else {
+      return res.status(404).json({ error: 'User not found' });
     }
-  } else {
-    return res.status(404).json({ error: 'User not found' });
+  } catch (error) {
+    console.error('Error updating the user:', error);
+    return res.status(500).json({ error: 'An error occurred while updating the user' });
   }
 };
-
 export const deleteUser = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id, 10);
-  const user = await User.findByPk(userId);
+  const userId = req.params.id;
 
-  if (user) {
-    try {
-      await user.destroy();
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (user) {
+      await user.deleteOne();
       return res.status(204).json({ message: 'User deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting the user:', error);
-      return res.status(500).json({ error: 'An error occurred while deleting the user' });
+    } else {
+      return res.status(404).json({ error: 'User not found' });
     }
-  } else {
-    return res.status(404).json({ error: 'User not found' });
+  } catch (error) {
+    console.error('Error deleting the user:', error);
+    return res.status(500).json({ error: 'An error occurred while deleting the user' });
   }
 };
-function sendWelcomeEmail(email: string) {
-  console.log(`Sending a welcome email to ${email}`);
-}
+

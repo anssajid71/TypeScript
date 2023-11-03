@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import express, { Request, Response } from 'express';
 import userRoutes from './routes/user.route';
 import serviceRoutes from './routes/services.route';
@@ -8,19 +9,15 @@ import bookingsRoutes from './routes/bookings.route';
 import attachmentsRoutes from './routes/attachments.route';
 import swaggerRoutes from './routes/swagger';
 import bodyParser from 'body-parser';
-import sequelize from './config/sequelize';
 
-sequelize
-  .authenticate()
+mongoose
+  .connect('mongodb://127.0.0.1:27017/travelling')
   .then(() => {
     console.log('Database connection has been established successfully.');
   })
-  .catch((err) => {
+  .catch((err: any) => {
     console.error('Unable to connect to the database:', err);
   });
-
-
-
 
 import fs from 'fs';
 
@@ -49,8 +46,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(bodyParser.json());
-
 
 app.use('/user', userRoutes);
 app.use('/api-docs', swaggerRoutes);

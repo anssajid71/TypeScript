@@ -1,24 +1,18 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import HotelModel, { HotelDocument } from '../models/hotels';
 import { generateToken } from '../config/generatetoken';
-import Hotel from '../models/hotels';
 
 export const createHotel = async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   try {
     const { hotel_name, location, images, description, price } = req.body;
-    const existingHotel = await Hotel.findOne({ where: { hotel_name } });
+
+    const existingHotel = await HotelModel.findOne({ hotel_name });
 
     if (existingHotel) {
       return res.status(400).json({ error: 'This Hotel is already full' });
     }
-    const newHotel = await Hotel.create({
-      id: req.body.id,
+
+    const newHotel = new HotelModel({
       hotel_name,
       location,
       images,
@@ -27,7 +21,8 @@ export const createHotel = async (req: Request, res: Response) => {
     });
 
     const expiresIn = '1m';
-    const token = generateToken({ data: { hotel: newHotel }, expiresIn });
+    const token = generateToken({ hotel: newHotel }, expiresIn);
+    await newHotel.save();
 
     res.status(201).json({ message: 'Hotel created successfully', hotel: newHotel, expiresIn, token });
   } catch (error) {
@@ -38,7 +33,7 @@ export const createHotel = async (req: Request, res: Response) => {
 
 export const getAllHotels = async (req: Request, res: Response) => {
   try {
-    const hotels = await Hotel.findAll();
+    const hotels = await HotelModel.find();
     res.json({ message: 'All hotels retrieved successfully', hotels });
   } catch (error) {
     console.error('Error retrieving hotels:', error);
@@ -47,9 +42,9 @@ export const getAllHotels = async (req: Request, res: Response) => {
 };
 
 export const getHotelById = async (req: Request, res: Response) => {
-  const hotelId = parseInt(req.params.id, 10);
+  const hotelId = req.params.id;
   try {
-    const hotel = await Hotel.findByPk(hotelId);
+    const hotel = await HotelModel.findById(hotelId);
     if (hotel) {
       res.json({ message: 'Hotel retrieved successfully', hotel });
     } else {
@@ -62,9 +57,9 @@ export const getHotelById = async (req: Request, res: Response) => {
 };
 
 export const updateHotel = async (req: Request, res: Response) => {
-  const hotelId = parseInt(req.params.id, 10);
+  const hotelId = req.params.id;
   try {
-    const hotel = await Hotel.findByPk(hotelId);
+    const hotel = await HotelModel.findById(hotelId);
 
     if (hotel) {
       hotel.hotel_name = req.body.hotel_name;
@@ -73,10 +68,10 @@ export const updateHotel = async (req: Request, res: Response) => {
       hotel.description = req.body.description;
       hotel.price = req.body.price;
 
-      await hotel.save();
-
       const expiresIn = '1m';
-      const token = generateToken({ data: { hotel }, expiresIn });
+      const token = generateToken({ hotel }, expiresIn);
+
+      await hotel.save();
 
       return res.status(200).json({
         message: 'Hotel updated successfully',
@@ -94,12 +89,12 @@ export const updateHotel = async (req: Request, res: Response) => {
 };
 
 export const deleteHotel = async (req: Request, res: Response) => {
-  const hotelId = parseInt(req.params.id, 10);
+  const hotelId = req.params.id;
   try {
-    const hotel = await Hotel.findByPk(hotelId);
+    const hotel = await HotelModel.findById(hotelId);
 
     if (hotel) {
-      await hotel.destroy();
+      await hotel.deleteOne();
       res.status(204).json({ message: 'Hotel deleted successfully' });
     } else {
       res.status(404).json({ error: 'Hotel not found' });

@@ -1,47 +1,24 @@
-'use strict';
+import { Document, Schema, model, Model } from 'mongoose';
 
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/sequelize';
-
-interface CompaniesModelAttributes {
-  id: number;
+export interface ICompany extends Document {
   user_id: number;
   name: string;
-  logo: string | null;
-  phone_number: string | null;
-  payment_status: string | null;
+  logo?: string | null;
+  phone_number?: string | null;
+  payment_status?: string | null;
 }
 
-interface CompaniesModelCreationAttributes extends CompaniesModelAttributes {}
+const CompanySchema: Schema<ICompany> = new Schema(
+  {
+    user_id: { type: Number, required: true, unique: true },
+    name: { type: String, required: true },
+    logo: { type: String },
+    phone_number: { type: String },
+    payment_status: { type: String },
+  },
+  { timestamps: true }
+);
 
-class Companies extends Model<CompaniesModelAttributes, CompaniesModelCreationAttributes> {
-  public id!: number;
-  public user_id!: number;
-  public name!: string;
-  public logo!: string | null;
-  public phone_number!: string | null;
-  public payment_status!: string | null;
+const Company: Model<ICompany> = model('Company', CompanySchema);
 
-  public static associate(models: any): void {
-  }
-}
-  Companies.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      user_id: DataTypes.INTEGER,
-      name: DataTypes.STRING,
-      logo: DataTypes.STRING,
-      phone_number: DataTypes.STRING,
-      payment_status: DataTypes.STRING,
-    },
-    {
-      sequelize,
-      modelName: 'Companies',
-    }
-  );
-
-export default Companies;
+export default Company;

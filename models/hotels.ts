@@ -1,56 +1,27 @@
-'use strict';
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/sequelize';
+import mongoose, { Document, Schema } from 'mongoose';
 
-interface HotelsModelAttributes {
-  id: number;
-  hotel_name: string;
-  location: string;
-  images: string | null;
-  description: string | null;
-  price: number | null;
-}
-
-interface HotelsCreationAttributes extends HotelsModelAttributes {}
-
-class Hotels extends Model<HotelsModelAttributes, HotelsCreationAttributes> {
-  public id!: number;
-  public hotel_name!: string;
-  public location!: string;
-  public images!: string | null;
-  public description!: string | null;
-  public price!: number | null;
-
-  public static associate(models: any): void {
-    Hotels.hasMany(models.Packages, {
-      foreignKey: 'hotelId',
-      as: 'packages',
-    });
-    Hotels.belongsTo(models.Attachments, {
-      foreignKey: 'attachment_id',
-      as: 'attachments',
-    });
-  }
-}
-
-Hotels.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    hotel_name: DataTypes.STRING,
-    location: DataTypes.STRING,
-    images: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    price: DataTypes.DECIMAL,
+// Define the schema for the "hotels" collection
+const hotelSchema = new Schema({
+  hotel_name: {
+    type: String,
+    required: true,
+    unique: true,
   },
-  {
-    sequelize,
-    modelName: 'Hotels',
-  }
-);
+  location: String,
+  images: String,
+  description: String,
+  price: Number,
+});
 
-export default Hotels;
+// Create a Mongoose model for the "hotels" collection
+const HotelModel = mongoose.model<HotelDocument>('Hotel', hotelSchema);
+
+export interface HotelDocument extends Document {
+  hotel_name: string;
+  location?: string;
+  images?: string;
+  description?: string;
+  price?: number;
+}
+
+export default HotelModel;

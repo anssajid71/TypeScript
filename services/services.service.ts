@@ -1,38 +1,34 @@
-import Services from '../models/services';
+import Services, { ServicesDocument } from '../models/services';
 
-const createService = async (serviceData: any) => {
+const createService = async (serviceData: any): Promise<ServicesDocument> => {
   try {
-    const newService = await Services.create(serviceData);
+    const newService = new Services(serviceData);
+    await newService.save();
     return newService;
   } catch (error) {
     throw error;
   }
 };
 
-const updateService = async (serviceId: number, serviceData: any) => {
+const updateService = async (serviceId: number, serviceData: any): Promise<ServicesDocument> => {
   try {
-    const [rowsUpdated] = await Services.update(serviceData, {
-      where: { id: serviceId },
-    });
+    const updatedService = await Services.findByIdAndUpdate(serviceId, serviceData, { new: true });
 
-    if (rowsUpdated === 0) {
+    if (!updatedService) {
       throw new Error('Service not found or no updates were made.');
     }
 
-    const updatedService = await Services.findByPk(serviceId);
     return updatedService;
   } catch (error) {
     throw error;
   }
 };
 
-const deleteService = async (serviceId: number) => {
+const deleteService = async (serviceId: number): Promise<void> => {
   try {
-    const rowsDeleted = await Services.destroy({
-      where: { id: serviceId },
-    });
+    const deletedService = await Services.findByIdAndRemove(serviceId);
 
-    if (rowsDeleted === 0) {
+    if (!deletedService) {
       throw new Error('Service not found or no deletions were made.');
     }
   } catch (error) {
@@ -40,18 +36,18 @@ const deleteService = async (serviceId: number) => {
   }
 };
 
-const getServiceById = async (serviceId: number) => {
+const getServiceById = async (serviceId: number): Promise<ServicesDocument | null> => {
   try {
-    const service = await Services.findByPk(serviceId);
+    const service = await Services.findById(serviceId);
     return service;
   } catch (error) {
     throw error;
   }
 };
 
-const getAllServices = async () => {
+const getAllServices = async (): Promise<ServicesDocument[]> => {
   try {
-    const services = await Services.findAll();
+    const services = await Services.find();
     return services;
   } catch (error) {
     throw error;

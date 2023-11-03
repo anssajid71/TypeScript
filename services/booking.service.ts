@@ -1,25 +1,22 @@
-import Booking  from '../models/booking';
+import BookingModel, { IBooking } from '../models/booking';
 
-const createBooking = async (bookingData: any) => {
+const createBooking = async (bookingData: IBooking) => {
   try {
-    const newBooking = await Booking.create(bookingData);
+    const newBooking = await BookingModel.create(bookingData);
     return newBooking;
   } catch (error) {
     throw error;
   }
 };
 
-const updateBooking = async (bookingId: number, bookingData: any) => {
+const updateBooking = async (bookingId: string, bookingData: IBooking) => {
   try {
-    const [rowsUpdated] = await Booking.update(bookingData, {
-      where: { id: bookingId },
-    });
+    const updatedBooking = await BookingModel.findByIdAndUpdate(bookingId, bookingData, { new: true });
 
-    if (rowsUpdated === 0) {
+    if (!updatedBooking) {
       throw new Error('Booking not found or no updates were made.');
     }
 
-    const updatedBooking = await Booking.findByPk(bookingId);
     return updatedBooking;
   } catch (error) {
     throw error;
@@ -28,29 +25,30 @@ const updateBooking = async (bookingId: number, bookingData: any) => {
 
 const getAllBookings = async () => {
   try {
-    const bookings = await Booking.findAll();
+    const bookings = await BookingModel.find();
     return bookings;
   } catch (error) {
     throw error;
   }
 };
 
-const getBookingById = async (bookingId: number) => {
+const getBookingById = async (bookingId: string) => {
   try {
-    const booking = await Booking.findByPk(bookingId);
+    const booking = await BookingModel.findById(bookingId);
+    if (!booking) {
+      throw new Error('Booking not found.');
+    }
     return booking;
   } catch (error) {
     throw error;
   }
 };
 
-const deleteBooking = async (bookingId: number) => {
+const deleteBooking = async (bookingId: string) => {
   try {
-    const rowsDeleted = await Booking.destroy({
-      where: { id: bookingId },
-    });
+    const result = await BookingModel.findByIdAndRemove(bookingId);
 
-    if (rowsDeleted === 0) {
+    if (!result) {
       throw new Error('Booking not found or no deletions were made.');
     }
   } catch (error) {

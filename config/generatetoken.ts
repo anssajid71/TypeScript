@@ -5,7 +5,7 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret_key';
 
-export function generateToken({ data, expiresIn }: { data: object; expiresIn: string; }): string {
+export function generateToken(data: object, expiresIn: string): string {
   return jwt.sign(data, JWT_SECRET, { expiresIn });
 }
 
@@ -15,7 +15,6 @@ export function authenticateToken(req: { headers: { [x: string]: any }; user: an
 
   if (token == null) {
     return res.sendStatus(401);
-    
   }
 
   jwt.verify(token, JWT_SECRET, (err: any, user: any) => {

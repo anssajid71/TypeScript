@@ -1,10 +1,6 @@
-'use strict';
+import mongoose, { Document, Schema } from 'mongoose';
 
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/sequelize';
-
-interface AttachmentsModelAttributes {
-  id: number;
+export interface IAttachment extends Document {
   attachment_id: number;
   attachment_type: string;
   attachment_url: string;
@@ -12,43 +8,14 @@ interface AttachmentsModelAttributes {
   updated_at: string;
 }
 
-interface AttachmentsModelCreationAttributes extends AttachmentsModelAttributes {
-}
+const AttachmentSchema: Schema<IAttachment> = new Schema({
+  attachment_id: { type: Number, required: true },
+  attachment_type: { type: String, required: true },
+  attachment_url: { type: String, required: true },
+  created_at: { type: String, required: true },
+  updated_at: { type: String, required: true },
+});
 
-class Attachments extends Model<AttachmentsModelAttributes, AttachmentsModelCreationAttributes> {
-  public id!: number; 
-  public attachment_id!: number;
-  public attachment_type!: string;
-  public attachment_url!: string;
-  public created_at!: string;
-  public updated_at!: string;
+const AttachmentModel = mongoose.model<IAttachment>('Attachment', AttachmentSchema);
 
-  public static associate(models: any): void {
-    Attachments.hasMany(models.Hotels, {
-      foreignKey: 'attachment_id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-      as: 'hotels',
-    });
-  }
-}
-  Attachments.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      attachment_id: DataTypes.INTEGER,
-      attachment_type: DataTypes.STRING,
-      attachment_url: DataTypes.STRING,
-      created_at: DataTypes.STRING,
-      updated_at: DataTypes.STRING,
-    },
-    {
-      sequelize,
-      modelName: 'Attachments',
-    }
-  );
-
-export default Attachments;
+export default AttachmentModel;
