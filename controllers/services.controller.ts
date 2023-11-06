@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import ServicesModel, { ServicesDocument } from '../models/services';
-import { generateToken } from '../config/generatetoken';
+import { generateToken } from '../middlewares/generatetoken';
 
 export const createService = async (req: Request, res: Response) => {
   const { package_id, service_name } = req.body;

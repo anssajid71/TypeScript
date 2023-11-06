@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import BookingModel, { IBooking } from '../models/booking';
-import { generateToken } from '../config/generatetoken';
+import { generateToken } from '../middlewares/generatetoken';
 
 
 export const createBooking = async (req: Request, res: Response) => {

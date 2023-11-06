@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import UserModel, { UserDocument } from '../models/user';
-import { generateToken } from '../config/generatetoken';
+import { generateToken } from '../middlewares/generatetoken';
 import bcrypt from 'bcrypt';
 
 export const createUser = async (req: Request, res: Response) => {

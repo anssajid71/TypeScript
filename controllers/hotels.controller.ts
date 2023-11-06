@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import HotelModel, { HotelDocument } from '../models/hotels';
-import { generateToken } from '../config/generatetoken';
+import { generateToken } from '../middlewares/generatetoken';
 
 export const createHotel = async (req: Request, res: Response) => {
   try {
