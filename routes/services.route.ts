@@ -22,8 +22,6 @@ const router = Router();
  *         type: string
  */
 
-// Apply the token verification middleware to all routes in this router
-
 /**
  * @swagger
  * /create:
