@@ -12,12 +12,13 @@ export const createUser = async (req: Request, res: Response) => {
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new UserModel({
       name,
       email,
       phone_number,
-      password,
+      password: hashedPassword,
       role,
     });
 
